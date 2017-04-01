@@ -8,7 +8,7 @@ public class NetworkInterface {
 	 * Retourne l'adresse IP de l'utilisateur local
 	 */
 	public InetAddress responseIP(){
-		InetAddress adr;
+		InetAddress adr = null;
 		return adr;
 	}
 	

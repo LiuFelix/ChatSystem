@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 public class Controller implements ActionListener{
 
+	private IHM ihm;
+	private String username;
+	
 	/*
 	 * Permet d'afficher la liste des utilisateurs connectés
 	 */
@@ -46,7 +49,7 @@ public class Controller implements ActionListener{
 	 * Envoie message Hello à tous les utilisateurs connectés
 	 */
 	public void connect(String username){
-		
+		this.username = this.ihm.getUsername();
 	}
 	
 	/*
@@ -59,19 +62,11 @@ public class Controller implements ActionListener{
 	/*
 	 * Envoie le message à NetworkInterface
 	 */
-	public String sendMessageContSys(){
-		String s = "";
-		return s;
+	public Message sendMessage(){
+		Message msg = new Message();
+		return msg;
 	}
-	
-	/*
-	 * Envoie le fichier à NetworkInterface
-	 */
-	public File sendFileContSys(){
-		File f = new File("coucou");
-		return f;
-	}
-	
+		
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
