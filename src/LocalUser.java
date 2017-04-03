@@ -7,6 +7,12 @@ public class LocalUser {
 	private InetAddress adrIP;
 	private int numPort;
 	
+	public LocalUser(String username, InetAddress adrIP, int numPort){
+		this.username = username;
+		this.adrIP = adrIP;
+		this.numPort = numPort;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
