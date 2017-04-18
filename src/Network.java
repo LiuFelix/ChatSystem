@@ -1,3 +1,5 @@
+import java.net.InetAddress;
+
 
 public class Network {
 	
@@ -24,18 +26,19 @@ public class Network {
 	/*
 	 * Permet d'envoyer un message  
 	 */
-//	public void sendPacket(Message packet){
+//	public void sendPacket(ObjectOutputStream packet){
 //		
 //	}
 	
-//	public void updatePacket(Message packet){
+//	public void updatePacket(Byte packet){
 //		
 //	}
 	
 	/*
-	 * Permet de recevoir un message
+	 * Permet de recevoir un message et le transmet a NetworkInterface
+	 * qui lui se charge d'envoyer un ack avec le bon numero de message
 	 */
-//	public Message receivePacket(Message packet){
+//	public Message receivePacket(Byte packet){
 //		return packet;
 //	}
 	
