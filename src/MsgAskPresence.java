@@ -1,3 +1,5 @@
+package message;
+
 import java.net.InetAddress;
 
 public class MsgAskPresence extends Message{
