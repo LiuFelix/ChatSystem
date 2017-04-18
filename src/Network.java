@@ -1,31 +1,48 @@
 
 public class Network {
 	
+	private NetworkInterface ninterface;
+	
 	/*
-	 * Permet d'envoyer un acquittement d'un message
+	 * Envoie le message Hello en broadcast
 	 */
-	public void ack(){
+	public void sendHello(MsgHello hello){
 		
 	}
 	
-	/*
-	 * Permet de 
-	 */
-	public void updatePacket(Message packet){
-		
+	public void receiveHello(MsgHello hello){
+		this.ninterface.hello(hello);
 	}
+	
+	/*
+	 * Permet d'envoyer un acquittement d'un message
+	 */
+//	public void ack(){
+//		
+//	}
+	
+	/*
+	 * Permet d'envoyer un message  
+	 */
+//	public void sendPacket(Message packet){
+//		
+//	}
+	
+//	public void updatePacket(Message packet){
+//		
+//	}
 	
 	/*
 	 * Permet de recevoir un message
 	 */
-	public void receivePacket(Message packet){
-		
-	}
+//	public Message receivePacket(Message packet){
+//		return packet;
+//	}
 	
 	/*
 	 * Permet de vérifier si un utilisateur est connecté
 	 */
-	public Boolean isConnected(LocalUser user){
-		return true;
-	}
+//	public Boolean isConnected(LocalUser user){
+//		return true;
+//	}
 }
