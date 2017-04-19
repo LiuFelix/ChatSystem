@@ -1,9 +1,10 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import message.MsgHello;
 
 
 public class Controller implements ActionListener{
@@ -24,9 +25,13 @@ public class Controller implements ActionListener{
 	/*
 	 * Permet d'afficher la liste des utilisateurs connectés
 	 */
-//	public void displayList(){
-//		
-//	}
+	public void displayList(){
+		String[] users = null;
+		for (int i=0; i<this.liste.size();i++){
+			users[i] = this.liste.get(i).getUsername();
+		}
+		this.ihm.setListe(users);
+	}
 	
 	/*
 	 * Met a jour la liste des utilisateurs connectes
@@ -36,6 +41,7 @@ public class Controller implements ActionListener{
 	 */
 	public void updateList(LocalUser user){
 		this.liste.add(user);
+		this.displayList();
 	}
 	
 	/*

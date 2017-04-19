@@ -1,4 +1,4 @@
-import java.net.InetAddress;
+import message.MsgHello;
 
 
 public class Network {

@@ -1,6 +1,8 @@
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import message.Message;
+import message.MsgHello;
 
 
 public class NetworkInterface {

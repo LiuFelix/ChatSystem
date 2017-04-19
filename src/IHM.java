@@ -4,13 +4,17 @@ import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class IHM extends JFrame{
 
 	private String titre;
 	private Controller controller;
+	private JList<String> liste;
 	
 	private JTextArea textToSend;
 		
@@ -25,28 +29,58 @@ public class IHM extends JFrame{
 		}
 		ihm();
 		this.pack();
+		this.setSize(700, 400);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 	}
 	
 	private void ihm(){
-		this.setLayout(new GridLayout(1,2));
-//		BorderLayout left = new BorderLayout();
-//		JButton disconnect = new JButton("Disconnect");
-//		BorderLayout right = new BorderLayout();
-//		JButton send = new JButton("Send");
-//		JButton file = new JButton("File");
-//		this.textToSend = new JTextArea();
-//		JTextArea discussion = new JTextArea();
-//		discussion.setEditable(false);
-		this.add(new JButton("send"));
-		this.add(new JButton("disconnect"));
+		this.setLayout(new BorderLayout());
+		//Panel gauche 
+		JPanel left = new JPanel();
+		left.setLayout(new BorderLayout());
+		JButton disconnect = new JButton("Disconnect");
+		left.add("North",disconnect);
+		this.liste = new JList<String>();
+		this.liste.setEnabled(false);
+		this.liste.addListSelectionListener(new ContactsListener());
+		JScrollPane contacts = new JScrollPane(this.liste,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		left.add("Center",contacts);
+		this.add("West",left);
+		
+		//Panel droit
+		JPanel right = new JPanel();
+		right.setLayout(new BorderLayout());
+		JTextArea discussion = new JTextArea();
+		discussion.setEditable(false);
+		right.add("Center",discussion);
+		
+		JPanel bas = new JPanel();
+		bas.setLayout(new BorderLayout());
+		this.textToSend = new JTextArea();
+		JScrollPane texte = new JScrollPane(this.textToSend,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		bas.add("Center",texte);
+		
+		JPanel boutons = new JPanel();
+		boutons.setLayout(new GridLayout(2,1));
+		JButton file = new JButton("File");
+		boutons.add(file);
+		JButton send = new JButton("Send");
+		send.addActionListener(controller);
+		boutons.add(send);
+		bas.add("East",boutons);
+		right.add("South",bas);
+		this.add("Center",right);
 	}
 
 	public String getTextToSend(){
 		String toSend = this.textToSend.getText();
 		this.textToSend.setText("");
 		return toSend;
+	}
+	
+	public void setListe(String[] liste){
+		this.liste.setListData(liste);
 	}
 }
