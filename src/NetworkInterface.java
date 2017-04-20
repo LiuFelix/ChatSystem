@@ -1,23 +1,63 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
-import message.Message;
 import message.MsgHello;
 
 
 public class NetworkInterface {
 
 	private Network network;
-	private Message message;
+	//private Message message;
 	private Controller controler;
+	private ServerSocket socket;
+	private InputStream input;
+	private OutputStream output;
+	private int port;
 	
-	public NetworkInterface(){
-		this.network = new Network();
+	/*
+	 * Constructeur NetworkInterface
+	 */
+	public NetworkInterface(int port) {
+		this.port = port;
+		try {
+			this.socket = new ServerSocket(port);
+			Socket sock = this.socket.accept();
+			this.input = sock.getInputStream();
+			this.output = sock.getOutputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(this.input));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.output));
+			this.network = new Network(reader, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
-	public void setMessage(Message msg){
-		this.message = msg;
+	/*
+	 * Getter and Setter
+	 */
+	public Network getNetwork() {
+		return network;
 	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
+	}
+
+	
+	
+//	public void setMessage(Message msg){
+//		this.message = msg;
+//	}
 	
 	/*
 	 * Retourne l'adresse IP de l'utilisateur local
@@ -27,29 +67,29 @@ public class NetworkInterface {
 	}
 	
 	/*
-	 * Retourne le numéro de port de l'utilisateur local
+	 * Retourne le numero de port de l'utilisateur local
 	 */
 	public int responsePort(){
-		return 2017;
+		return this.port;
 	}
 	
 	/*
-	 * Retourne vrai si l'utilisateur est connecté
+	 * Retourne vrai si l'utilisateur est connecte
 	 */
 //	public Boolean isConnected(LocalUser user){
 //		return true;
 //	}
 	
 	/*
-	 * Permet de récupérer un message Hello
-	 * Construit un LocalUser avec les informations recuperées
+	 * Permet de recuperer un message Hello
+	 * Construit un LocalUser avec les informations recuperees
 	 */
 	public void hello(MsgHello msg){
-		this.controler.updateList(new LocalUser(msg.getSenderUserName(),msg.getSourceAddress(),msg.getSourcePort()));
+		this.controler.updateList(new LocalUser(msg.getSourceUserName(),msg.getSourceAddress(),msg.getSourcePort()));
 	}
 	
 	/*
-	 * Permet de récupérer un message GoodBye d'un utilisateur
+	 * Permet de recuperer un message GoodBye d'un utilisateur
 	 */
 //	public void goodbye(String username){
 //		
@@ -61,15 +101,14 @@ public class NetworkInterface {
 //	}
 	
 	/*
-	 * Envoie le message à Network
+	 * Envoie le message a Network
 	 */
-//	public String sendMessageSysNet(){
-//		String s = "";
-//		return s;
-//	}
+	public void sendMessageSysNet(){
+		this.controler.sendMessage();
+	}
 	
 	/*
-	 * Envoie le fichier à Network
+	 * Envoie le fichier a� Network
 	 */
 //	public File sendFileSysNet(){
 //		File f = new File("coucou");

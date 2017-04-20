@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
 
 import javax.swing.JButton;
@@ -12,20 +13,28 @@ import javax.swing.JTextArea;
 
 public class IHM extends JFrame{
 
+	@SuppressWarnings("unused")
 	private String titre;
-	private Controller controller;
+	//private Controller controller;
 	private JList<String> liste;
+	private String username;
+	private JButton send;
+//	private BufferedWriter writer;
+//	private BufferedReader reader;
 	
 	private JTextArea textToSend;
 		
-	public IHM (String titre, Controller controller) throws UnknownHostException{
+	public IHM (String titre) throws UnknownHostException{
 		this.titre = titre;
-		this.controller = controller;
+		//this.controller = controller;
+//		this.writer = writer;
 		String username="";
+		// /!\ IHM est simplement le view, n'utilise pas les methodes du controller
 		while(username.equals("")){
 			username = JOptionPane.showInputDialog(null,"Entrer votre login","Login",JOptionPane.QUESTION_MESSAGE);
 //			System.out.println("login : "+username);
-			this.controller.connect(username);
+			//this.controller.connect(username);
+			this.username = username;
 		}
 		ihm();
 		this.pack();
@@ -35,6 +44,10 @@ public class IHM extends JFrame{
 		this.setLocationRelativeTo(null);
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+
 	private void ihm(){
 		this.setLayout(new BorderLayout());
 		//Panel gauche 
@@ -66,12 +79,18 @@ public class IHM extends JFrame{
 		boutons.setLayout(new GridLayout(2,1));
 		JButton file = new JButton("File");
 		boutons.add(file);
-		JButton send = new JButton("Send");
-		send.addActionListener(controller);
-		boutons.add(send);
+		this.send = new JButton("Send");
+		
+		boutons.add(this.send);
 		bas.add("East",boutons);
 		right.add("South",bas);
 		this.add("Center",right);
+	}
+	
+	//Permet au controller de recuperer l'ActionListener et d'agir en consequence
+	// A faire de cette facon pour chaque bouton
+	void addSendListener(ActionListener listenSendBtn){
+		this.send.addActionListener(listenSendBtn);
 	}
 
 	public String getTextToSend(){

@@ -1,10 +1,40 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+
+import message.Message;
 import message.MsgHello;
 
 
 public class Network {
 	
 	private NetworkInterface ninterface;
+	private BufferedWriter writer;
+	private BufferedReader reader;
 	
+	public Network(BufferedReader reader, BufferedWriter writer){
+		this.reader = reader;
+		this.writer = writer;
+		
+	}
+	
+	public BufferedWriter getWriter() {
+		return writer;
+	}
+
+	public void setWriter(BufferedWriter writer) {
+		this.writer = writer;
+	}
+
+	public BufferedReader getReader() {
+		return reader;
+	}
+
+	public void setReader(BufferedReader reader) {
+		this.reader = reader;
+	}
+
 	/*
 	 * Envoie le message Hello en broadcast
 	 */
@@ -26,9 +56,17 @@ public class Network {
 	/*
 	 * Permet d'envoyer un message  
 	 */
-//	public void sendPacket(ObjectOutputStream packet){
-//		
-//	}
+	public void sendPacket(Message mesg){
+		ObjectOutputStream packet = null;
+		try {
+			final FileOutputStream fichier = new FileOutputStream("mesg.ser");
+			packet = new ObjectOutputStream(fichier);
+			packet.writeObject(mesg);
+			packet.flush();
+		} catch (final java.io.IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 //	public void updatePacket(Byte packet){
 //		
@@ -43,7 +81,7 @@ public class Network {
 //	}
 	
 	/*
-	 * Permet de vérifier si un utilisateur est connecté
+	 * Permet de verifier si un utilisateur est connecté
 	 */
 //	public Boolean isConnected(LocalUser user){
 //		return true;
