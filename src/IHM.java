@@ -13,8 +13,6 @@ import javax.swing.JTextArea;
 
 public class IHM extends JFrame{
 
-	@SuppressWarnings("unused")
-	private String titre;
 	//private Controller controller;
 	private JList<String> liste;
 	private String username;
@@ -23,20 +21,13 @@ public class IHM extends JFrame{
 //	private BufferedReader reader;
 	
 	private JTextArea textToSend;
+	private JTextArea discussion;
 		
-	public IHM (String titre) throws UnknownHostException{
-		this.titre = titre;
+	public IHM () throws UnknownHostException{
 		//this.controller = controller;
-//		this.writer = writer;
-		String username="";
-		// /!\ IHM est simplement le view, n'utilise pas les methodes du controller
-		while(username.equals("")){
-			username = JOptionPane.showInputDialog(null,"Entrer votre login","Login",JOptionPane.QUESTION_MESSAGE);
-//			System.out.println("login : "+username);
-			//this.controller.connect(username);
-			this.username = username;
-		}
+		//this.writer = writer;
 		ihm();
+		this.setTitle("ChatSystem");
 		this.pack();
 		this.setSize(700, 400);
 		this.setVisible(true);
@@ -99,6 +90,14 @@ public class IHM extends JFrame{
 		return toSend;
 	}
 	
+	public String getDiscussion() {
+		return discussion.getText();
+	}
+
+	public void setDiscussion(String discussion) {
+		this.discussion.setText(discussion);
+	}
+
 	public void setListe(String[] liste){
 		this.liste.setListData(liste);
 	}
