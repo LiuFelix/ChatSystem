@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -24,44 +25,38 @@ public class Controller{
 	private ArrayList<LocalUser> liste;
 	private int port;
 	
-	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
+	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException, SocketException{
 		/*Initialisation de l'IHM*/
 		this.ihmCo = ihmCo;
 		this.ihmCo.addConnectListener(new ConnectListener());
 
-		
 		/*Initialisation du Network*/
 		this.liste = new ArrayList<>();
 		this.broadcast = InetAddress.getByName("255.255.255.255");
 		this.port = port;
 		this.ninterface = new NetworkInterface(this.port);
-		
 	}
 	
 	class SendListener implements ActionListener{
-
 		public void actionPerformed(ActionEvent arg0) {
-			try {
-				ninterface.getNetwork().getWriter().write(ihm.getTextToSend() + "\n");
-				ninterface.getNetwork().getWriter().flush();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			/*Recupere le message et le destinataire*/
+			String message = ihm.getTextToSend() + "\n";
+			String dest;
+			/*Recupere les infos du destinataire (IP et Port)*/
+			
+			/*Transmet le tout a NetworkInterface*/
+			ninterface.sendMessageSysNet();	//toutes les infos pour creer un message
 		}
 	}
 	
 	class ConnectListener implements ActionListener{
-
 		public void actionPerformed(ActionEvent e) {
 			try {
 				username = ihmCo.getUsername();
-//				System.out.println(username);
 				ihm = new IHM();
 				ihm.addSendListener(new SendListener());
 				ihm.addListListener(new ContactsListener());
 			} catch (UnknownHostException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -69,7 +64,9 @@ public class Controller{
 	
 	class ContactsListener implements ListSelectionListener{
 		public void valueChanged(ListSelectionEvent e) {
-			
+			/*Ouvrir une nouvelle fenetre de discussion pour l'utilisateur choisi*/
+			String name = liste.get(e.getFirstIndex()).getUsername();
+			ihm.addConversation(name);
 		}
 	}
 	

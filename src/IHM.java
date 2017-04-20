@@ -2,28 +2,31 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionListener;
 
 public class IHM extends JFrame{
 
 	private JList<String> liste;
-	private String username;
 	private JButton send;
 //	private BufferedWriter writer;
 //	private BufferedReader reader;
 	
 	private JTextArea textToSend;
-	private JTextArea discussion;
+	private JTabbedPane discussion;
+	private ArrayList<JPanel> conversations;
 		
 	public IHM () throws UnknownHostException{
 		//this.writer = writer;
+		this.conversations = new ArrayList<JPanel>();
 		ihm();
 		this.setTitle("ChatSystem");
 		this.pack();
@@ -31,10 +34,6 @@ public class IHM extends JFrame{
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-	}
-	
-	public String getUsername() {
-		return username;
 	}
 
 	private void ihm(){
@@ -54,8 +53,7 @@ public class IHM extends JFrame{
 		//Panel droit
 		JPanel right = new JPanel();
 		right.setLayout(new BorderLayout());
-		JTextArea discussion = new JTextArea();
-		discussion.setEditable(false);
+		this.discussion = new JTabbedPane();
 		right.add("Center",discussion);
 		
 		JPanel bas = new JPanel();
@@ -82,20 +80,54 @@ public class IHM extends JFrame{
 		this.send.addActionListener(listenSendBtn);
 	}
 
+	/*
+	 * Retourn le contenu du message a envoyer
+	 */
 	public String getTextToSend(){
 		String toSend = this.textToSend.getText();
 		this.textToSend.setText("");
 		return toSend;
 	}
 	
-	public String getDiscussion() {
-		return discussion.getText();
+	/*
+	 * Met a jour le contenu de la discussion choisi
+	 */
+	public void setDiscussion(int index, String text) {
+		
+	}
+	
+	/*
+	 * Retourne le destinataire de la fenetre actuelle
+	 */
+	public String getDestinataire(){
+		
+		return "";
+	}
+	
+	/*
+	 * Retourne l'index de la conversation d'un user
+	 */
+	public int getIndexConv(String name){
+		for(int i=0; i < this.discussion.getComponentCount(); i++){
+			if(this.discussion.getTitleAt(i).equals(name)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/*
+	 * Ajoute une nouvelle conversation 
+	 */
+	public void addConversation(String name){
+		JPanel conv = new JPanel();
+		this.conversations.add(conv);
+		this.discussion.add(name,conv);
 	}
 
-	public void setDiscussion(String discussion) {
-		this.discussion.setText(discussion);
-	}
-
+	/*
+	 * Actions sur la liste
+	 */
 	public void addListListener(ListSelectionListener listenList){
 		this.liste.addListSelectionListener(listenList);
 	}
