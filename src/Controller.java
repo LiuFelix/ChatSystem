@@ -13,6 +13,7 @@ import message.MsgText;
 public class Controller{
 
 	private IHM ihm;
+	private IHMConnect ihmCo;
 	private String username;
 	private LocalUser model;
 	private NetworkInterface ninterface;
@@ -20,8 +21,8 @@ public class Controller{
 	private ArrayList<LocalUser> liste;
 	private int port;
 	
-	public Controller(IHM ihm, int port) throws UnknownHostException{
-		this.ihm = ihm;
+	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
+		this.ihmCo = ihmCo;
 		this.broadcast = InetAddress.getByName("255.255.255.255");
 		this.liste = new ArrayList<>();
 		this.ninterface = new NetworkInterface(port);
@@ -37,6 +38,19 @@ public class Controller{
 				ninterface.getNetwork().getWriter().write(ihm.getTextToSend() + "\n");
 				ninterface.getNetwork().getWriter().flush();
 			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+	}
+	
+	class ConnectListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e) {
+			try {
+				ihm = new IHM();
+			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -68,7 +82,7 @@ public class Controller{
 	}
 	
 	/*
-	 * Retrouve les informations d'un utilisateur a  partir de son pseudo
+	 * Retrouve les informations d'un utilisateur aï¿½ partir de son pseudo
 	 */
 //	public LocalUser findUser(String username){
 //		LocalUser user = new LocalUser(username,);
@@ -116,7 +130,7 @@ public class Controller{
 	
 	
 	/*
-	 * Envoie message GoodBye à  tous les utilisateurs connectes
+	 * Envoie message GoodBye ï¿½ tous les utilisateurs connectes
 	 */
 //	public void disconnect(){
 //		MsgBye bye = new MsgBye(model.getAdrIP(), model.getNumPort(), model.getUsername(), InetAddress destinationAddress, int destinationPort, 0);
