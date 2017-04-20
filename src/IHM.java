@@ -6,14 +6,12 @@ import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class IHM extends JFrame{
 
-	//private Controller controller;
 	private JList<String> liste;
 	private String username;
 	private JButton send;
@@ -24,7 +22,6 @@ public class IHM extends JFrame{
 	private JTextArea discussion;
 		
 	public IHM () throws UnknownHostException{
-		//this.controller = controller;
 		//this.writer = writer;
 		ihm();
 		this.setTitle("ChatSystem");

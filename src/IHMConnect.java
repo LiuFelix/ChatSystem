@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 
 public class IHMConnect extends JFrame{
@@ -23,9 +24,11 @@ public class IHMConnect extends JFrame{
 		this.add("Center",login);
 		this.add("East",connect);
 		this.pack();
+		this.setSize(200,70);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		
 	}
 	
 	public String getUsername(){

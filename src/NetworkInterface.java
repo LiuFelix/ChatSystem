@@ -108,7 +108,7 @@ public class NetworkInterface {
 	}
 	
 	/*
-	 * Envoie le fichier a  Network
+	 * Envoie le fichier au Network
 	 */
 //	public File sendFileSysNet(){
 //		File f = new File("coucou");
@@ -121,7 +121,7 @@ public class NetworkInterface {
 		this.network.sendHello(hello);
 	}
 	
-//	public void sendBye(){
-//		
+//	public void sendBye(MsgBye bye){
+//		this.network.sendBye(bye);
 //	}
 }

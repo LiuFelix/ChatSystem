@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import javax.swing.WindowConstants;
+
 import message.Message;
 import message.MsgHello;
 import message.MsgText;
@@ -22,13 +24,17 @@ public class Controller{
 	private int port;
 	
 	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
+		/*Initialisation de l'IHM*/
 		this.ihmCo = ihmCo;
-		this.broadcast = InetAddress.getByName("255.255.255.255");
-		this.liste = new ArrayList<>();
-		this.ninterface = new NetworkInterface(port);
-		this.port = port;
+		this.ihmCo.addConnectListener(new ConnectListener());
+
 		
-		this.ihm.addSendListener(new SendListener());
+		/*Initialisation du Network*/
+		this.liste = new ArrayList<>();
+		this.broadcast = InetAddress.getByName("255.255.255.255");
+		this.port = port;
+		this.ninterface = new NetworkInterface(this.port);
+		
 	}
 	
 	class SendListener implements ActionListener{
@@ -49,7 +55,10 @@ public class Controller{
 
 		public void actionPerformed(ActionEvent e) {
 			try {
+				username = ihmCo.getUsername();
+//				System.out.println(username);
 				ihm = new IHM();
+				ihm.addSendListener(new SendListener());
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

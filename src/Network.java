@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
 import message.Message;
+import message.MsgBye;
 import message.MsgHello;
 
 
@@ -36,7 +37,7 @@ public class Network {
 	}
 
 	/*
-	 * Envoie le message Hello en broadcast
+	 * Envoie et reception de message Hello
 	 */
 	public void sendHello(MsgHello hello){
 		
@@ -44,6 +45,17 @@ public class Network {
 	
 	public void receiveHello(MsgHello hello){
 		this.ninterface.hello(hello);
+	}
+	
+	/*
+	 * Envoie et reception de message Bye
+	 */
+	public void sendBye(MsgBye bye){
+		
+	}
+	
+	public void receiveBye(MsgBye bye){
+		
 	}
 	
 	/*
