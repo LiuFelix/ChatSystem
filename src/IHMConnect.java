@@ -22,6 +22,10 @@ public class IHMConnect extends JFrame{
 		this.add("North",text);
 		this.add("Center",login);
 		this.add("East",connect);
+		this.pack();
+		this.setVisible(true);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 	}
 	
 	public String getUsername(){
