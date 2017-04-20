@@ -1,15 +1,14 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
+import message.Message;
 import message.MsgHello;
 
 
@@ -18,7 +17,7 @@ public class NetworkInterface {
 	private Network network;
 	//private Message message;
 	private Controller controler;
-	private ServerSocket socket;
+	private DatagramSocket socket;
 	private InputStream input;
 	private OutputStream output;
 	private int port;
@@ -29,13 +28,17 @@ public class NetworkInterface {
 	public NetworkInterface(int port) {
 		this.port = port;
 		try {
-			this.socket = new ServerSocket(port);
-			Socket sock = this.socket.accept();
-			this.input = sock.getInputStream();
-			this.output = sock.getOutputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(this.input));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.output));
-			this.network = new Network(reader, writer);
+			
+			/*Instanciation du DatagramSocket*/
+			this.socket = new DatagramSocket(port);
+			
+			/*Lancement du Thread qui écoute*/
+			ListenSocket ls = new ListenSocket(this.socket);
+			ls.start();
+			
+			
+			
+			this.network = new Network(ls);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,11 +107,29 @@ public class NetworkInterface {
 	 * Envoie le message a Network
 	 */
 	public void sendMessageSysNet(){
-		this.controler.sendMessage();
+		//Message msg = this.controler.sendMessage();
+		Message msg = new Message(); // Les infos passés par le controller
+		FileOutputStream fichier;
+		try {
+			fichier = new FileOutputStream("mesg.ser");
+			ObjectOutputStream packet = new ObjectOutputStream(fichier);
+			packet.writeObject(msg);
+			//packet.flush();
+			/*Lancement du thread qui envoie*/
+			SendSocket ss = new SendSocket(this.socket, responseIP(), this.port, packet);
+			ss.start();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/*
-	 * Envoie le fichier au Network
+	 * Envoie le fichier a  Network
 	 */
 //	public File sendFileSysNet(){
 //		File f = new File("coucou");
@@ -121,7 +142,7 @@ public class NetworkInterface {
 		this.network.sendHello(hello);
 	}
 	
-//	public void sendBye(MsgBye bye){
-//		this.network.sendBye(bye);
+//	public void sendBye(){
+//		
 //	}
 }

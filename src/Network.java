@@ -11,29 +11,32 @@ import message.MsgHello;
 public class Network {
 	
 	private NetworkInterface ninterface;
-	private BufferedWriter writer;
-	private BufferedReader reader;
+	//private SendSocket ss;
+	private ListenSocket ls;
 	
-	public Network(BufferedReader reader, BufferedWriter writer){
-		this.reader = reader;
-		this.writer = writer;
+	public Network(ListenSocket ls){
+		this.ls = ls;
+		//this.ss = ss;
 		
 	}
 	
-	public BufferedWriter getWriter() {
-		return writer;
+
+//	public SendSocket getSs() {
+//		return ss;
+//	}
+//
+//
+//	public void setSs(SendSocket ss) {
+//		this.ss = ss;
+//	}
+
+
+	public ListenSocket getLs() {
+		return ls;
 	}
 
-	public void setWriter(BufferedWriter writer) {
-		this.writer = writer;
-	}
-
-	public BufferedReader getReader() {
-		return reader;
-	}
-
-	public void setReader(BufferedReader reader) {
-		this.reader = reader;
+	public void setLs(ListenSocket ls) {
+		this.ls = ls;
 	}
 
 	/*
@@ -93,7 +96,7 @@ public class Network {
 //	}
 	
 	/*
-	 * Permet de verifier si un utilisateur est connectÃ©
+	 * Permet de verifier si un utilisateur est connecté
 	 */
 //	public Boolean isConnected(LocalUser user){
 //		return true;
