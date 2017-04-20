@@ -9,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionListener;
 
 public class IHM extends JFrame{
 
@@ -45,7 +46,7 @@ public class IHM extends JFrame{
 		left.add("North",disconnect);
 		this.liste = new JList<String>();
 		this.liste.setEnabled(false);
-		this.liste.addListSelectionListener(new ContactsListener());
+		
 		JScrollPane contacts = new JScrollPane(this.liste,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		left.add("Center",contacts);
 		this.add("West",left);
@@ -95,6 +96,10 @@ public class IHM extends JFrame{
 		this.discussion.setText(discussion);
 	}
 
+	public void addListListener(ListSelectionListener listenList){
+		this.liste.addListSelectionListener(listenList);
+	}
+	
 	public void setListe(String[] liste){
 		this.liste.setListData(liste);
 	}

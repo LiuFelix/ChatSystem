@@ -5,7 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import message.Message;
 import message.MsgHello;
@@ -48,7 +49,6 @@ public class Controller{
 				e1.printStackTrace();
 			}
 		}
-		
 	}
 	
 	class ConnectListener implements ActionListener{
@@ -59,12 +59,18 @@ public class Controller{
 //				System.out.println(username);
 				ihm = new IHM();
 				ihm.addSendListener(new SendListener());
+				ihm.addListListener(new ContactsListener());
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-		
+	}
+	
+	class ContactsListener implements ListSelectionListener{
+		public void valueChanged(ListSelectionEvent e) {
+			
+		}
 	}
 	
 	/*
