@@ -1,5 +1,3 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
@@ -13,9 +11,32 @@ public class Network {
 	private NetworkInterface ninterface;
 	//private SendSocket ss;
 	private ListenSocket ls;
+	private Object sendObj;
+	private Object receiveObj;
 	
-	public Network(ListenSocket ls){
-		this.ls = ls;
+	public Object getSendObj() {
+		return sendObj;
+	}
+
+
+	public void setSendObj(Object sendObj) {
+		this.sendObj = sendObj;
+	}
+
+
+	public Object getReceiveObj() {
+		return receiveObj;
+	}
+
+
+	public void setReceiveObj(Object receiveObj) {
+		this.receiveObj = receiveObj;
+	}
+
+
+	public Network(NetworkInterface ninterface){//ListenSocket ls){
+		this.ninterface = ninterface;
+		//this.ls = ls;
 		//this.ss = ss;
 		
 	}
@@ -46,9 +67,9 @@ public class Network {
 		
 	}
 	
-	public void receiveHello(MsgHello hello){
-		this.ninterface.hello(hello);
-	}
+//	public void receiveHello(MsgHello hello){
+//		this.ninterface.hello(hello);
+//	}
 	
 	/*
 	 * Envoie et reception de message Bye
@@ -91,9 +112,9 @@ public class Network {
 	 * Permet de recevoir un message et le transmet a NetworkInterface
 	 * qui lui se charge d'envoyer un ack avec le bon numero de message
 	 */
-//	public Message receivePacket(Byte packet){
-//		return packet;
-//	}
+	public void receivePacket(Object obj){
+		this.ninterface.receivePacket(obj);
+	}
 	
 	/*
 	 * Permet de verifier si un utilisateur est connecté

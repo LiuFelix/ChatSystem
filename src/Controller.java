@@ -1,17 +1,13 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import message.Message;
 import message.MsgHello;
-import message.MsgText;
 
 
 public class Controller{
@@ -19,43 +15,67 @@ public class Controller{
 	private IHM ihm;
 	private IHMConnect ihmCo;
 	private String username;
-	private LocalUser model;
 	private NetworkInterface ninterface;
 	private InetAddress broadcast;
 	private ArrayList<LocalUser> liste;
 	private int port;
 	
-	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException, SocketException{
+	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
 		/*Initialisation de l'IHM*/
 		this.ihmCo = ihmCo;
 		this.ihmCo.addConnectListener(new ConnectListener());
 
+		
 		/*Initialisation du Network*/
 		this.liste = new ArrayList<>();
-		this.broadcast = InetAddress.getByName("255.255.255.255");
+		this.broadcast = InetAddress.getByName("10.0.0.255");
 		this.port = port;
-		this.ninterface = new NetworkInterface(this.port);
+		this.ninterface = new NetworkInterface(this.port, this);
+		
 	}
 	
+	/*
+	 * Implémentation de l'ActionListener du bouton d'envoi de texte
+	 */
 	class SendListener implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
-			/*Recupere le message et le destinataire*/
-			String message = ihm.getTextToSend() + "\n";
-			String dest;
-			/*Recupere les infos du destinataire (IP et Port)*/
-			
-			/*Transmet le tout a NetworkInterface*/
-			ninterface.sendMessageSysNet();	//toutes les infos pour creer un message
+			//Le controller passe les informations et ninterface crée le packet pour l'envoyer au network
+			//System.out.println("Envoi des infos vers le Network Interface");
+			try {
+				System.out.println("Informations : IP src = " + ninterface.responseIP() + ";  Port src = "+ ninterface.responsePort() + " ; Sender Username = "+ ihm.getUsername()+ " ; IP dest = "+ broadcast + "; port dest = "+port);
+				String text = ihm.getTextToSend();
+				ihm.setDiscussion(ihm.getIndexConv(ihm.getDestinataire()),"Moi : " + text+ "\n");
+				ninterface.sendMessageSysNet(ninterface.responseIP(), ninterface.responsePort(), ihm.getUsername(), broadcast, port, text);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+			//System.out.println("Fin de l'envoi vers le network interface pour création du message");
 		}
 	}
 	
+	/*
+	 * Implémentation de l'ActionListener de Connexion : Fermeture l'IHM de connexion et initialisation de l'IHM de discussion
+	 */
 	class ConnectListener implements ActionListener{
+
 		public void actionPerformed(ActionEvent e) {
 			try {
 				username = ihmCo.getUsername();
-				ihm = new IHM();
+				ihmCo.setVisible(false);
+				ihmCo.dispose();
+				
+//				System.out.println(username);
+				System.out.println("Initialisation de l'IHM");
+				ihm = new IHM(username);
 				ihm.addSendListener(new SendListener());
 				ihm.addListListener(new ContactsListener());
+				ihm.addDisconnectListener(new DisconnectListener());
+				LocalUser user = new LocalUser("Alice", broadcast, port);
+				LocalUser user1 = new LocalUser("Robert", broadcast, port);
+				updateList(user);
+				updateList(user1);
+				MsgHello hello = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,0);
+				ninterface.sendHello(hello);
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
@@ -66,20 +86,38 @@ public class Controller{
 		public void valueChanged(ListSelectionEvent e) {
 			/*Ouvrir une nouvelle fenetre de discussion pour l'utilisateur choisi*/
 			String name = liste.get(e.getFirstIndex()).getUsername();
+			System.out.println("[ContactsListener] Ajout de " + name);
 			ihm.addConversation(name);
+		}
+	}
+	
+	/*
+	 * Implémentation de l'ActionListener permettant la déconnexion : Fermeture de l'IHM
+	 */
+	class DisconnectListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e) {
+			ihm.setVisible(false);
+			ihm.dispose();
+			ihmCo.setVisible(true);
 		}
 	}
 	
 	/*
 	 * Permet d'afficher la liste des utilisateurs connectes
 	 */
-	@SuppressWarnings("null")
 	public void displayList(){
-		String[] users = null;
+		String[] users = new String[this.liste.size()];
 		for (int i=0; i<this.liste.size();i++){
 			users[i] = this.liste.get(i).getUsername();
+			System.out.println("Je suis " + this.liste.get(i).getUsername());
 		}
-		this.ihm.setListe(users);
+		
+		if (users[0] == null || users[this.liste.size()-1] == null) {
+			System.out.println("Error : Can't display users, list null");
+		} else {
+			this.ihm.setListe(users);
+		}
 	}
 	
 	/*
@@ -89,12 +127,16 @@ public class Controller{
 	 * Si pas de reponse de AskPresence, on supprime
 	 */
 	public void updateList(LocalUser user){
-		this.liste.add(user);
+		if (!this.liste.contains(user)){
+			System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " à la liste");
+			this.liste.add(user);
+		}
 		this.displayList();
+		System.out.println("Bijour");
 	}
 	
 	/*
-	 * Retrouve les informations d'un utilisateur aï¿½ partir de son pseudo
+	 * Retrouve les informations d'un utilisateur  a partir de son pseudo
 	 */
 //	public LocalUser findUser(String username){
 //		LocalUser user = new LocalUser(username,);
@@ -131,18 +173,18 @@ public class Controller{
 	
 	/*
 	 * Informe l'utilisateur qu'il est connecte
-	 * Envoie message Hello Ã  tous les utilisateurs connectes
+	 * Envoie message Hello à tous les utilisateurs connectes
 	 */
-	public void connect(String username) throws UnknownHostException{
-		this.username = username;
-		this.model = new LocalUser(this.username,ninterface.responseIP(),ninterface.responsePort());
-		MsgHello hello = new MsgHello(this.model.getAdrIP(),this.model.getNumPort(),this.username,this.broadcast,this.port,0);
-		this.ninterface.sendHello(hello);
-	}
+//	public void connect(String username) throws UnknownHostException{
+//		this.username = username;
+//		this.model = new LocalUser(this.username,ninterface.responseIP(),ninterface.responsePort());
+//		MsgHello hello = new MsgHello(this.model.getAdrIP(),this.model.getNumPort(),this.username,this.broadcast,this.port,0);
+//		this.ninterface.sendHello(hello);
+//	}
 	
 	
 	/*
-	 * Envoie message GoodBye ï¿½ tous les utilisateurs connectes
+	 * Envoie message GoodBye a tous les utilisateurs connectes
 	 */
 //	public void disconnect(){
 //		MsgBye bye = new MsgBye(model.getAdrIP(), model.getNumPort(), model.getUsername(), InetAddress destinationAddress, int destinationPort, 0);
@@ -151,12 +193,20 @@ public class Controller{
 	/*
 	 * Envoie le message a NetworkInterface
 	 */
-	public Message sendMessage(){
-		String toSend = this.ihm.getTextToSend();
-		MsgText msg = new MsgText(model.getAdrIP(), model.getNumPort(), model.getUsername(), this.broadcast, this.port,  0, toSend);
-		return msg;
+//	public Message sendMessage() throws UnknownHostException{
+//		String toSend = this.ihm.getTextToSend();
+//		MsgText msg = new MsgText(ninterface.responseIP(), ninterface.responsePort(), ihm.getUsername(), this.broadcast, this.port,  0, toSend);
+//		System.out.println("[Controller] Création du message");
+//		return msg;
+//	}
+
+	public void receiveMessage(String username, String text){
+		System.out.println("[Controller] Username : " + username + " ; Text : "+ text);
+		if (ihm.getIndexConv(username) == -1){
+			ihm.addConversation(username);
+		}
+		ihm.setDiscussion(ihm.getIndexConv(username),username + " : " + text+"\n");
 	}
-//		
 	
 
 }

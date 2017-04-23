@@ -9,10 +9,12 @@ public class ListenSocket extends Thread{
 
 	private DatagramSocket ds;
 	private Object obj;
+	private Network network;
 	
-		public ListenSocket (DatagramSocket ds){
+		public ListenSocket (DatagramSocket ds, Network network){
 			super();
 			this.ds = ds;
+			this.network = network;
 		}
 		
 		public Object getObj() {
@@ -31,6 +33,8 @@ public class ListenSocket extends Thread{
 				      Object o = is.readObject();
 				      is.close();
 				      this.obj = o;
+				      System.out.println("Réception d'un packet sur le réseau");
+				      network.receivePacket(this.obj);
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}

@@ -6,7 +6,7 @@ public class Launcher {
 
 	public static void main(String[] args) throws IOException {
 
-		final int port = 2048;
+		final int port = 2046;
 //		Launcher launcher = new Launcher(port);
 //		Socket sock = launcher.socket.accept();
 //		launcher.input = sock.getInputStream();

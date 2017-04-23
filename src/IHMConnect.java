@@ -37,5 +37,6 @@ public class IHMConnect extends JFrame{
 	
 	public void addConnectListener(ActionListener listenConnect){
 		this.connect.addActionListener(listenConnect);
+
 	}
 }

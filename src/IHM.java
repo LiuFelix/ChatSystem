@@ -16,17 +16,16 @@ import javax.swing.event.ListSelectionListener;
 public class IHM extends JFrame{
 
 	private JList<String> liste;
+	private String username;
 	private JButton send;
-//	private BufferedWriter writer;
-//	private BufferedReader reader;
-	
+	private JButton disconnect;
 	private JTextArea textToSend;
 	private JTabbedPane discussion;
-	private ArrayList<JPanel> conversations;
+	private ArrayList<JTextArea> conversations;
 		
-	public IHM () throws UnknownHostException{
-		//this.writer = writer;
-		this.conversations = new ArrayList<JPanel>();
+	public IHM (String username) throws UnknownHostException{
+		this.username = username;
+		this.conversations = new ArrayList<JTextArea>();
 		ihm();
 		this.setTitle("ChatSystem");
 		this.pack();
@@ -35,16 +34,20 @@ public class IHM extends JFrame{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 	}
+	
+	public String getUsername() {
+		return username;
+	}
 
 	private void ihm(){
 		this.setLayout(new BorderLayout());
 		//Panel gauche 
 		JPanel left = new JPanel();
 		left.setLayout(new BorderLayout());
-		JButton disconnect = new JButton("Disconnect");
+		this.disconnect = new JButton("Disconnect as "+ this.username);
 		left.add("North",disconnect);
 		this.liste = new JList<String>();
-		this.liste.setEnabled(false);
+//		this.liste.setEnabled(false);
 		
 		JScrollPane contacts = new JScrollPane(this.liste,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		left.add("Center",contacts);
@@ -54,6 +57,9 @@ public class IHM extends JFrame{
 		JPanel right = new JPanel();
 		right.setLayout(new BorderLayout());
 		this.discussion = new JTabbedPane();
+		//JScrollPane disc = new JScrollPane(this.discussion,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//discussion.setEditable(false);
+		//discussion.disable();
 		right.add("Center",discussion);
 		
 		JPanel bas = new JPanel();
@@ -72,16 +78,26 @@ public class IHM extends JFrame{
 		bas.add("East",boutons);
 		right.add("South",bas);
 		this.add("Center",right);
+		this.addConversation("Félix");
+		this.addConversation("Bob");
 	}
 	
-	//Permet au controller de recuperer l'ActionListener et d'agir en consequence
-	// A faire de cette facon pour chaque bouton
+	/*
+	 * Méthode permettant d'ajouter un ActionListener sur le bouton Send
+	 */
 	void addSendListener(ActionListener listenSendBtn){
 		this.send.addActionListener(listenSendBtn);
 	}
+	
+	/*
+	 * Méthode permettant d'ajouter un ActionListener sur le bouton Disconnect
+	 */
+	void addDisconnectListener(ActionListener listenDisconnectBtn){
+		this.disconnect.addActionListener(listenDisconnectBtn);
+	}
 
 	/*
-	 * Retourn le contenu du message a envoyer
+	 * Récupère le texte dans la zone d'envoi d'un message
 	 */
 	public String getTextToSend(){
 		String toSend = this.textToSend.getText();
@@ -90,18 +106,31 @@ public class IHM extends JFrame{
 	}
 	
 	/*
-	 * Met a jour le contenu de la discussion choisi
+	 * Met a jour le contenu de la discussion choisie
 	 */
 	public void setDiscussion(int index, String text) {
-		
+		((JTextArea) this.discussion.getComponentAt(index)).append(text);
 	}
 	
 	/*
 	 * Retourne le destinataire de la fenetre actuelle
 	 */
 	public String getDestinataire(){
-		
-		return "";
+		int index = this.discussion.getSelectedIndex();
+		return this.discussion.getTitleAt(index);
+	}
+	
+	/*
+	 * Retourne vrai si la conversation avec l'username passé en paramètre est déjà ouverte
+	 */
+	public boolean existConv(String name){
+		boolean trouve = false;
+		for(int i=0; i < this.discussion.getComponentCount(); i++){
+			if(this.discussion.getTitleAt(i).equals(name)){
+				trouve = true;
+			}
+		}
+		return trouve;
 	}
 	
 	/*
@@ -120,18 +149,23 @@ public class IHM extends JFrame{
 	 * Ajoute une nouvelle conversation 
 	 */
 	public void addConversation(String name){
-		JPanel conv = new JPanel();
-		this.conversations.add(conv);
-		this.discussion.add(name,conv);
+		if (!existConv(name)){
+			System.out.println("Ajout de "+ name);
+			JTextArea conv = new JTextArea();
+			conv.disable();
+			this.conversations.add(conv);
+			this.discussion.addTab(name,conv);
+		}
 	}
-
+	
 	/*
 	 * Actions sur la liste
 	 */
 	public void addListListener(ListSelectionListener listenList){
 		this.liste.addListSelectionListener(listenList);
 	}
-	
+
+
 	public void setListe(String[] liste){
 		this.liste.setListData(liste);
 	}
