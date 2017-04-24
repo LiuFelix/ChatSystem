@@ -48,7 +48,10 @@ public class Controller{
 				System.out.println("Informations : IP src = " + ninterface.responseIP() + ";  Port src = "+ ninterface.responsePort() + " ; Sender Username = "+ ihm.getUsername()+ " ; IP dest = "+ broadcast + "; port dest = "+port);
 				String text = ihm.getTextToSend();
 				ihm.setDiscussion(ihm.getIndexConv(ihm.getDestinataire()),"Moi : " + text+ "\n");
-				ninterface.sendMessageSysNet(ninterface.responseIP(), ninterface.responsePort(), ihm.getUsername(), broadcast, port, text);
+				//recuperer les infos du destinataire
+				LocalUser dest = getInfos(ihm.getDestinataire());
+				if (dest.getUsername() != "")
+					ninterface.sendMessageSysNet(ninterface.responseIP(), ninterface.responsePort(), ihm.getUsername(), dest.getAdrIP(), dest.getNumPort(), text);
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -128,7 +131,7 @@ public class Controller{
 //		if (users[0] == null || users[this.liste.size()-1] == null) {
 //			System.out.println("Error : Can't display users, list null");
 //		} else {
-//			this.ihm.setListe(users);
+			this.ihm.setListe(users);
 //		}
 	}
 	
@@ -140,8 +143,8 @@ public class Controller{
 	 */
 	public void updateList(LocalUser user, String type){
 		
-		System.out.println(user.getUsername());
-		System.out.println(ihm.getUsername());
+//		System.out.println(user.getUsername());
+//		System.out.println(ihm.getUsername());
 		
 		if (!(user.getUsername().matches(ihm.getUsername()))){
 			if (type == "hello"){
@@ -236,4 +239,13 @@ public class Controller{
 		return ihm;
 	}
 
+	public LocalUser getInfos(String username){
+		LocalUser user = new LocalUser("",this.broadcast,0);
+		for (int i=0; i<this.liste.size(); i++){
+			if (this.liste.get(i).getUsername() == username){
+				user = this.liste.get(i);
+			}
+		}
+		return user;
+	}
 }

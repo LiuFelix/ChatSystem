@@ -132,7 +132,7 @@ public class NetworkInterface {
 		SendSocket ss;
 		try {
 			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,0);
-			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
+			ss = new SendSocket(this.socket, adrDest, this.port, msg);
 			ss.start();
 			System.out.println("J'ai bien vu une connexion, je te repond je suis connecte");
 		} catch (UnknownHostException e) {
