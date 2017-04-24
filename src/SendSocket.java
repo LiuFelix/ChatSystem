@@ -41,7 +41,7 @@ public class SendSocket extends Thread{
 		    byte[] sendBuf = byteStream.toByteArray();
 		    DatagramPacket packet = new DatagramPacket( sendBuf, sendBuf.length, this.adr, this.port);
 		    int byteCount = packet.getLength();
-		    System.out.println("Envoi du packet sur le réseau");
+		    System.out.println("Envoi du packet sur le réseau a " + this.adr);
 		    ds.send(packet);
 		    os.close();
 		} catch (UnknownHostException e) {

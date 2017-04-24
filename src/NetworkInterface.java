@@ -31,10 +31,10 @@ public class NetworkInterface {
 			
 			this.network = new Network(this);
 			
-			/*Lancement du Thread qui Ã©coute*/
+			/*Lancement du Thread qui écoute*/
 			ListenSocket ls = new ListenSocket(this.socket, this.network);
 			ls.start();
-			
+			System.out.println("J'écoute sur l'IP : " + responseIP());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,33 +89,13 @@ public class NetworkInterface {
 	/*
 	 * Envoie le message a Network
 	 */
-	public void sendMessageSysNet(InetAddress adrSrc, int portSrc, String sourceUsername, InetAddress adrDest, int portDest, String text){
+	public void sendMessageSysNet(InetAddress adrSrc, int portSrc, String sourceUsername, InetAddress adrDest, int portDest, String text) throws UnknownHostException{
 		//Message msg = this.controler.sendMessage();
-		System.out.println("[NetworkInterface] CrÃ©ation du message texte");
-		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, 0, text); // Les infos passÃ©s par le controller
+		System.out.println("[NetworkInterface] Création du message texte");
+		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, 0, text); // Les infos passés par le controller
 		SendSocket ss;
-		try {
-			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
-			ss.start();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-//		FileOutputStream fichier;
-//		try {
-//			fichier = new FileOutputStream("mesg.ser");
-//			ObjectOutputStream packet = new ObjectOutputStream(fichier);
-//			packet.writeObject(msg);
-//			//packet.flush();
-//			/*Lancement du thread qui envoie*/
-//			SendSocket ss = new SendSocket(this.socket, responseIP(), this.port, msg);
-//			ss.start();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println("[NetworkInterface] Echec de l'envoi du packet");
-//			e.printStackTrace();
-//		}
-//		
+		ss = new SendSocket(this.socket, adrDest, this.port, msg);
+		ss.start();
 	}
 	
 	public void receivePacket(Object obj){
@@ -151,13 +131,8 @@ public class NetworkInterface {
 	public void sendHello(MsgHello msg){
 		//Message msg = this.controler.sendMessage();
 		SendSocket ss;
-		try {
-			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
-			ss.start();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ss = new SendSocket(this.socket, controller.getBroadcast(), this.port, msg);
+		ss.start();
 	}
 	
 	public void sendReplyPresence(InetAddress adrDest, int portDest){
@@ -166,7 +141,7 @@ public class NetworkInterface {
 			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,0);
 			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
 			ss.start();
-			System.out.println("J'ai bien vu une connexion, je te rÃ©pond je suis connectÃ©");
+			System.out.println("J'ai bien vu une connexion, je te répond je suis connecté");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
