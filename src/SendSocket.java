@@ -22,7 +22,7 @@ public class SendSocket extends Thread{
 		this.port = port;
 		this.obj = obj;
 		if (this.obj instanceof Message){
-			System.out.println("C'est bien un message que j'ai trouvé dans SendSocket");
+			System.out.println("C'est bien un message que j'ai trouve dans SendSocket");
 		} else {
 			System.out.println("Attention ce n'est pas un message, c'est "+ this.obj.toString());
 		}
@@ -41,7 +41,7 @@ public class SendSocket extends Thread{
 		    byte[] sendBuf = byteStream.toByteArray();
 		    DatagramPacket packet = new DatagramPacket( sendBuf, sendBuf.length, this.adr, this.port);
 		    int byteCount = packet.getLength();
-		    System.out.println("Envoi du packet sur le réseau a " + this.adr);
+		    System.out.println("Envoi du packet sur le reseau a " + this.adr);
 		    ds.send(packet);
 		    os.close();
 		} catch (UnknownHostException e) {

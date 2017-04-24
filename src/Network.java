@@ -18,30 +18,24 @@ public class Network {
 		return sendObj;
 	}
 
-
 	public void setSendObj(Object sendObj) {
 		this.sendObj = sendObj;
 	}
-
 
 	public Object getReceiveObj() {
 		return receiveObj;
 	}
 
-
 	public void setReceiveObj(Object receiveObj) {
 		this.receiveObj = receiveObj;
 	}
-
 
 	public Network(NetworkInterface ninterface){//ListenSocket ls){
 		this.ninterface = ninterface;
 		//this.ls = ls;
 		//this.ss = ss;
-		
 	}
 	
-
 //	public SendSocket getSs() {
 //		return ss;
 //	}
@@ -50,7 +44,6 @@ public class Network {
 //	public void setSs(SendSocket ss) {
 //		this.ss = ss;
 //	}
-
 
 	public ListenSocket getLs() {
 		return ls;
@@ -117,7 +110,7 @@ public class Network {
 	}
 	
 	/*
-	 * Permet de verifier si un utilisateur est connecté
+	 * Permet de verifier si un utilisateur est connectï¿½
 	 */
 //	public Boolean isConnected(LocalUser user){
 //		return true;
