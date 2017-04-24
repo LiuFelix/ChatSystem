@@ -31,7 +31,7 @@ public class NetworkInterface {
 			
 			this.network = new Network(this);
 			
-			/*Lancement du Thread qui écoute*/
+			/*Lancement du Thread qui Ã©coute*/
 			ListenSocket ls = new ListenSocket(this.socket, this.network);
 			ls.start();
 			
@@ -91,8 +91,8 @@ public class NetworkInterface {
 	 */
 	public void sendMessageSysNet(InetAddress adrSrc, int portSrc, String sourceUsername, InetAddress adrDest, int portDest, String text){
 		//Message msg = this.controler.sendMessage();
-		System.out.println("[NetworkInterface] Création du message texte");
-		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, 0, text); // Les infos passés par le controller
+		System.out.println("[NetworkInterface] CrÃ©ation du message texte");
+		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, 0, text); // Les infos passÃ©s par le controller
 		SendSocket ss;
 		try {
 			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
@@ -120,17 +120,17 @@ public class NetworkInterface {
 	
 	public void receivePacket(Object obj){
 		if (obj instanceof MsgText){
-			System.out.println( "[NetworkInterface]  Username : "+ ((MsgText) obj).getSourceUserName() + " ; Text : "+ ((MsgText) obj).getTextMessage());
+			System.out.println( "[NetworkInterface]  Username : "+ ((MsgText) obj).getSourceUserName() + " ; Text : "+ ((MsgText) obj).getTextMessage() + " \tIP : " + ((MsgText) obj).getSourceAddress() + " \tPort : " + ((MsgText) obj).getSourcePort());
 			controller.receiveMessage(((MsgText) obj).getSourceUserName(), ((MsgText) obj).getTextMessage());
 			
 		} else if (obj instanceof MsgHello){
 			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername());
+			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user);
 			sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		} else if (obj instanceof MsgReplyPresence){
 			LocalUser user = new LocalUser(((MsgReplyPresence) obj).getSourceUserName(), ((MsgReplyPresence) obj).getSourceAddress(), ((MsgReplyPresence) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername());
+			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user);
 		} else {
 			System.out.println("Error : Not the right type\n Get : "+ obj.getClass().toString() + " instead of an instance of Message");
@@ -139,7 +139,7 @@ public class NetworkInterface {
 	}
 	
 	/*
-	 * Envoie le fichier a  Network
+	 * Envoie le fichier a  Network
 	 */
 //	public File sendFileSysNet(){
 //		File f = new File("coucou");
@@ -166,7 +166,7 @@ public class NetworkInterface {
 			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,0);
 			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
 			ss.start();
-			System.out.println("J'ai bien vu une connexion, je te répond je suis connecté");
+			System.out.println("J'ai bien vu une connexion, je te rÃ©pond je suis connectÃ©");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
