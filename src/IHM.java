@@ -19,6 +19,7 @@ public class IHM extends JFrame{
 	private String username;
 	private JButton send;
 	private JButton disconnect;
+	private JButton closeConv;
 	private JTextArea textToSend;
 	private JTabbedPane discussion;
 	private ArrayList<JTextArea> conversations;
@@ -69,35 +70,59 @@ public class IHM extends JFrame{
 		bas.add("Center",texte);
 		
 		JPanel boutons = new JPanel();
-		boutons.setLayout(new GridLayout(2,1));
+		boutons.setLayout(new GridLayout(3,1));
 		JButton file = new JButton("File");
 		boutons.add(file);
 		this.send = new JButton("Send");
-		
 		boutons.add(this.send);
+		this.closeConv = new JButton("X");
+		boutons.add(this.closeConv);
 		bas.add("East",boutons);
 		right.add("South",bas);
 		this.add("Center",right);
-		this.addConversation("Félix");
-		this.addConversation("Bob");
 	}
 	
 	/*
-	 * Méthode permettant d'ajouter un ActionListener sur le bouton Send
+	 * Methode permettant d'ajouter un ActionListener sur le bouton Send
 	 */
 	void addSendListener(ActionListener listenSendBtn){
 		this.send.addActionListener(listenSendBtn);
 	}
 	
 	/*
-	 * Méthode permettant d'ajouter un ActionListener sur le bouton Disconnect
+	 * Methode permettant d'ajouter un ActionListener sur le bouton Disconnect
 	 */
 	void addDisconnectListener(ActionListener listenDisconnectBtn){
 		this.disconnect.addActionListener(listenDisconnectBtn);
 	}
+	
+	/*
+	 * Actions sur la liste
+	 */
+	public void addListListener(ListSelectionListener listenList){
+		this.liste.addListSelectionListener(listenList);
+	}
+
+
+	public void setListe(String[] liste){
+		this.liste.setListData(liste);
+	}
+	
+	/*
+	 * Ajout action sur le bouton fermer la conversation
+	 */
+	public void addCloseListener(ActionListener listenCloseBtn){
+		this.closeConv.addActionListener(listenCloseBtn);
+	}
+	
+	public void removeConv(int index){
+		this.discussion.remove(index);
+//		this.conversations.remove(index);
+		this.repaint();
+	}
 
 	/*
-	 * Récupère le texte dans la zone d'envoi d'un message
+	 * Recupere le texte dans la zone d'envoi d'un message
 	 */
 	public String getTextToSend(){
 		String toSend = this.textToSend.getText();
@@ -110,6 +135,9 @@ public class IHM extends JFrame{
 	 */
 	public void setDiscussion(int index, String text) {
 		((JTextArea) this.discussion.getComponentAt(index)).append(text);
+//		JTextArea conv = new JTextArea(text);
+//		this.conversations.get(index).add(conv);
+		
 	}
 	
 	/*
@@ -121,7 +149,7 @@ public class IHM extends JFrame{
 	}
 	
 	/*
-	 * Retourne vrai si la conversation avec l'username passé en paramètre est déjà ouverte
+	 * Retourne vrai si la conversation avec l'username passe en parametre est deja ouverte
 	 */
 	public boolean existConv(String name){
 		boolean trouve = false;
@@ -145,6 +173,12 @@ public class IHM extends JFrame{
 		return -1;
 	}
 	
+	public void openConversation(int index) {
+		this.discussion.setSelectedIndex(index);
+		this.liste.clearSelection();
+		this.liste.repaint();
+	}
+	
 	/*
 	 * Ajoute une nouvelle conversation 
 	 */
@@ -153,20 +187,12 @@ public class IHM extends JFrame{
 			System.out.println("Ajout de "+ name);
 			JTextArea conv = new JTextArea();
 			conv.disable();
+//			JScrollPane scrollConv = new JScrollPane();
+//			scrollConv.add(conv);
 			this.conversations.add(conv);
 			this.discussion.addTab(name,conv);
+			this.liste.clearSelection();
+			this.liste.repaint();
 		}
-	}
-	
-	/*
-	 * Actions sur la liste
-	 */
-	public void addListListener(ListSelectionListener listenList){
-		this.liste.addListSelectionListener(listenList);
-	}
-
-
-	public void setListe(String[] liste){
-		this.liste.setListData(liste);
 	}
 }
