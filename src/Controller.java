@@ -28,7 +28,7 @@ public class Controller{
 
 		/*Initialisation du Network*/
 		this.liste = new ArrayList<>();
-		this.broadcast = InetAddress.getByName("10.255.255.255");
+		this.broadcast = InetAddress.getByName("10.1.255.255");
 		this.port = port;
 		this.ninterface = new NetworkInterface(this.port, this);
 	}
@@ -72,10 +72,6 @@ public class Controller{
 				ihm.addListListener(new ContactsListener());
 				ihm.addDisconnectListener(new DisconnectListener());
 				ihm.addCloseListener(new CloseListener());
-				LocalUser user = new LocalUser("Alice", broadcast, port);
-				LocalUser user1 = new LocalUser("Robert", broadcast, port);
-				updateList(user);
-				updateList(user1);
 				MsgHello hello = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,0);
 				ninterface.sendHello(hello);
 			} catch (UnknownHostException e1) {
@@ -129,11 +125,11 @@ public class Controller{
 			users[i] = this.liste.get(i).getUsername();
 			System.out.println("Je suis " + this.liste.get(i).getUsername());
 		}
-		if (users[0] == null || users[this.liste.size()-1] == null) {
-			System.out.println("Error : Can't display users, list null");
-		} else {
-			this.ihm.setListe(users);
-		}
+//		if (users[0] == null || users[this.liste.size()-1] == null) {
+//			System.out.println("Error : Can't display users, list null");
+//		} else {
+//			this.ihm.setListe(users);
+//		}
 	}
 	
 	/*
@@ -142,10 +138,19 @@ public class Controller{
 	 * Si on recoit un ReplyPresence, on garde l'utilisateur ou on l'ajoute si pas present dans la liste
 	 * Si pas de reponse de AskPresence, on supprime
 	 */
-	public void updateList(LocalUser user){
-		if (!(this.liste.contains(user) || user.getUsername().matches(ihm.getUsername()))){
-			System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
-			this.liste.add(user);
+	public void updateList(LocalUser user, String type){
+		if (!user.getUsername().matches(ihm.getUsername())){
+			if (type.equals("hello")){
+				System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+				this.liste.add(user);
+			}else if(type.equals("reply")){
+				for(int i = 0; i < this.liste.size(); i++){
+					if (!this.liste.get(i).equals(user)){
+						System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+						this.liste.add(user);
+					}
+				}
+			}
 		}
 		this.displayList();
 	}
