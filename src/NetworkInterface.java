@@ -100,12 +100,12 @@ public class NetworkInterface {
 		} else if (obj instanceof MsgHello){
 			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
-			controller.updateList(user);
+			controller.updateList(user,"hello");
 			sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		} else if (obj instanceof MsgReplyPresence){
 			LocalUser user = new LocalUser(((MsgReplyPresence) obj).getSourceUserName(), ((MsgReplyPresence) obj).getSourceAddress(), ((MsgReplyPresence) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
-			controller.updateList(user);
+			controller.updateList(user,"reply");
 		} else {
 			System.out.println("Error : Not the right type\n Get : "+ obj.getClass().toString() + " instead of an instance of Message");
 		}
