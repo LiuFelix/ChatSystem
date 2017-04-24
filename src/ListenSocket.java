@@ -33,12 +33,11 @@ public class ListenSocket extends Thread{
 				      Object o = is.readObject();
 				      is.close();
 				      this.obj = o;
-				      System.out.println("Réception d'un packet sur le réseau");
+				      System.out.println("Reception d'un packet sur le reseau");
 				      network.receivePacket(this.obj);
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
 }

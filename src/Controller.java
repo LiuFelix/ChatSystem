@@ -139,14 +139,18 @@ public class Controller{
 	 * Si pas de reponse de AskPresence, on supprime
 	 */
 	public void updateList(LocalUser user, String type){
-		if (!user.getUsername().matches(ihm.getUsername())){
-			if (type.equals("hello")){
-				System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+		
+		System.out.println(user.getUsername());
+		System.out.println(ihm.getUsername());
+		
+		if (!(user.getUsername().matches(ihm.getUsername()))){
+			if (type == "hello"){
+				System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
 				this.liste.add(user);
-			}else if(type.equals("reply")){
+			}else if(type == "reply"){
 				for(int i = 0; i < this.liste.size(); i++){
 					if (!this.liste.get(i).equals(user)){
-						System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+						System.out.println("Reply----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
 						this.liste.add(user);
 					}
 				}

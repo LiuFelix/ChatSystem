@@ -5,7 +5,6 @@ import message.Message;
 import message.MsgBye;
 import message.MsgHello;
 
-
 public class Network {
 	
 	private NetworkInterface ninterface;

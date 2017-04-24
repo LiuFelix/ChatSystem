@@ -14,7 +14,6 @@ public class IHMConnect extends JFrame{
 	private JButton connect;
 	
 	public IHMConnect(){
-		
 		this.setTitle("Connection");
 		this.setLayout(new BorderLayout());
 		JLabel text = new JLabel("Entrer un login");
@@ -28,7 +27,6 @@ public class IHMConnect extends JFrame{
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
-		
 	}
 	
 	public String getUsername(){
@@ -37,6 +35,5 @@ public class IHMConnect extends JFrame{
 	
 	public void addConnectListener(ActionListener listenConnect){
 		this.connect.addActionListener(listenConnect);
-
 	}
 }
