@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import message.Message;
 import message.MsgHello;
+import message.MsgReplyPresence;
 import message.MsgText;
 
 
@@ -124,9 +125,15 @@ public class NetworkInterface {
 			
 		} else if (obj instanceof MsgHello){
 			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
+			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername());
+			controller.updateList(user);
+			sendReplyPresence(user.getAdrIP(),user.getNumPort());
+		} else if (obj instanceof MsgReplyPresence){
+			LocalUser user = new LocalUser(((MsgReplyPresence) obj).getSourceUserName(), ((MsgReplyPresence) obj).getSourceAddress(), ((MsgReplyPresence) obj).getSourcePort());
+			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername());
 			controller.updateList(user);
 		} else {
-			System.out.println("Error : Not the right type\n Get : "+ obj.getClass().toString() + "instead of an instance of Message");
+			System.out.println("Error : Not the right type\n Get : "+ obj.getClass().toString() + " instead of an instance of Message");
 		}
 		
 	}
@@ -147,6 +154,19 @@ public class NetworkInterface {
 		try {
 			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
 			ss.start();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendReplyPresence(InetAddress adrDest, int portDest){
+		SendSocket ss;
+		try {
+			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,0);
+			ss = new SendSocket(this.socket, responseIP(), this.port, msg);
+			ss.start();
+			System.out.println("J'ai bien vu une connexion, je te répond je suis connecté");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

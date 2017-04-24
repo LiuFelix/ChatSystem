@@ -28,7 +28,7 @@ public class Controller{
 		
 		/*Initialisation du Network*/
 		this.liste = new ArrayList<>();
-		this.broadcast = InetAddress.getByName("10.0.0.255");
+		this.broadcast = InetAddress.getByName("10.255.255.255");
 		this.port = port;
 		this.ninterface = new NetworkInterface(this.port, this);
 		
@@ -127,12 +127,11 @@ public class Controller{
 	 * Si pas de reponse de AskPresence, on supprime
 	 */
 	public void updateList(LocalUser user){
-		if (!this.liste.contains(user)){
+		if (!(this.liste.contains(user) || user.getUsername().matches(ihm.getUsername()))){
 			System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " à la liste");
 			this.liste.add(user);
 		}
 		this.displayList();
-		System.out.println("Bijour");
 	}
 	
 	/*
@@ -206,6 +205,10 @@ public class Controller{
 			ihm.addConversation(username);
 		}
 		ihm.setDiscussion(ihm.getIndexConv(username),username + " : " + text+"\n");
+	}
+
+	public IHM getIhm() {
+		return ihm;
 	}
 	
 
