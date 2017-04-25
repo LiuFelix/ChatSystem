@@ -78,12 +78,15 @@ public class Controller{
 				
 				ThreadHello tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
 				tHello.start();
-//				MsgHello hello = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*100));
-//				ninterface.sendHello(hello);
 				
 				//Phase de test : Envoi de plusieurs packets hello
-//				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
-//				ninterface.sendHello(hello1);
+				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
+				ninterface.sendHello(hello1);
+				
+//				for (int i=0; i<10000000; i++);
+//				System.out.println("Et Bye !");
+//				MsgBye bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
+//				ninterface.sendBye(bye);
 //				ninterface.sendHello(hello1);
 //				ninterface.sendHello(hello1);
 			} catch (UnknownHostException e1) {
@@ -193,6 +196,14 @@ public class Controller{
 			}
 		}
 		this.displayList();
+	}
+	
+	public void removeList(LocalUser user){
+		for(int i = 0; i < this.liste.size(); i++){
+			if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
+				this.liste.remove(i);
+			}
+		}
 	}
 	
 	/*

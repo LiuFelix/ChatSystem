@@ -25,7 +25,7 @@ public class ThreadHello extends Thread{
 			MsgHello hello = new MsgHello(this.adrSrc, this.portSrc, this.username, this.adrDest, this.portDest,(int)(Math.random()*100));
 			ninterface.sendHello(hello);
 			try {
-				sleep(10);
+				sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
