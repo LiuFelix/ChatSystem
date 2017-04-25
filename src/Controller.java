@@ -4,10 +4,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import message.MsgBye;
 import message.MsgHello;
 
 
@@ -28,7 +28,7 @@ public class Controller{
 
 		/*Initialisation du Network*/
 		this.liste = new ArrayList<>();
-		this.broadcast = InetAddress.getByName("10.1.255.255");
+		this.broadcast = InetAddress.getByName("10.202.1.9");
 		this.port = port;
 		this.ninterface = new NetworkInterface(this.port, this);
 	}
@@ -75,8 +75,17 @@ public class Controller{
 				ihm.addListListener(new ContactsListener());
 				ihm.addDisconnectListener(new DisconnectListener());
 				ihm.addCloseListener(new CloseListener());
-				MsgHello hello = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,0);
-				ninterface.sendHello(hello);
+				
+				ThreadHello tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
+				tHello.start();
+//				MsgHello hello = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*100));
+//				ninterface.sendHello(hello);
+				
+				//Phase de test : Envoi de plusieurs packets hello
+//				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
+//				ninterface.sendHello(hello1);
+//				ninterface.sendHello(hello1);
+//				ninterface.sendHello(hello1);
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
@@ -107,6 +116,15 @@ public class Controller{
 			System.out.println("You are disconnected");
 			ihm.dispose();
 			ihmCo.setVisible(true);
+			liste.clear();
+			MsgBye bye;
+			try {
+				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*100));
+				ninterface.sendBye(bye);
+			} catch (UnknownHostException e1) {
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 	
@@ -142,20 +160,35 @@ public class Controller{
 	 * Si pas de reponse de AskPresence, on supprime
 	 */
 	public void updateList(LocalUser user, String type){
-		
-//		System.out.println(user.getUsername());
-//		System.out.println(ihm.getUsername());
-		
 		if (!(user.getUsername().matches(ihm.getUsername()))){
 			if (type == "hello"){
-				System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
-				this.liste.add(user);
-			}else if(type == "reply"){
-				for(int i = 0; i < this.liste.size(); i++){
-					if (!this.liste.get(i).equals(user)){
-						System.out.println("Reply----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+				if (!liste.isEmpty()){
+					boolean trouve = false;
+					for(int i = 0; i < this.liste.size(); i++){
+						if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
+							trouve = true;
+						}
+					}
+					System.out.println("Valeur de trouve : " + trouve);
+					if (trouve == false){
+						System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
 						this.liste.add(user);
 					}
+				} else {
+					System.out.println("La liste est vide");
+					System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					this.liste.add(user);
+				}
+			}else if(type == "reply"){
+				boolean trouve = false;
+				for(int i = 0; i < this.liste.size(); i++){
+					if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
+						trouve = true;
+					}
+				}
+				if (trouve == false){
+					System.out.println("Reply----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					this.liste.add(user);
 				}
 			}
 		}
@@ -200,7 +233,7 @@ public class Controller{
 	
 	/*
 	 * Informe l'utilisateur qu'il est connecte
-	 * Envoie message Hello � tous les utilisateurs connectes
+	 * Envoie message Hello a tous les utilisateurs connectes
 	 */
 //	public void connect(String username) throws UnknownHostException{
 //		this.username = username;
@@ -238,7 +271,7 @@ public class Controller{
 	public IHM getIhm(){
 		return ihm;
 	}
-
+	
 	public LocalUser getInfos(String username){
 		LocalUser user = new LocalUser("",this.broadcast,0);
 		for (int i=0; i<this.liste.size(); i++){
@@ -246,6 +279,11 @@ public class Controller{
 				user = this.liste.get(i);
 			}
 		}
+		
+		if (user.getUsername().matches("")){
+			System.out.println("Error : Does not find the user");
+		}
 		return user;
 	}
+
 }
