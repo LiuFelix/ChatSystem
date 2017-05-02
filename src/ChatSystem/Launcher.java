@@ -4,6 +4,8 @@ import java.io.IOException;
 
 public class Launcher {
 	
+	static IHMConnect ihmCo;
+	static Controller controller;
 
 	public static void main(String[] args) throws IOException {
 
@@ -16,8 +18,26 @@ public class Launcher {
 //		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(launcher.output));
 //		Network network = new Network(reader, writer);
 
-		IHMConnect ihmCo = new IHMConnect();
-		Controller controller = new Controller(ihmCo, port);
+		ihmCo = new IHMConnect();
+		controller = new Controller(ihmCo, port);
 	}
+
+	public static IHMConnect getIhmCo() {
+		return ihmCo;
+	}
+
+	public static void setIhmCo(IHMConnect ihmCo) {
+		Launcher.ihmCo = ihmCo;
+	}
+
+	public static Controller getController() {
+		return controller;
+	}
+
+	public static void setController(Controller controller) {
+		Launcher.controller = controller;
+	}
+	
+	
 
 }

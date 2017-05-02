@@ -34,18 +34,6 @@ public class Controller{
 		this.ninterface = new NetworkInterface(this.port, this);
 	}
 	
-	public InetAddress getBroadcast(){
-		return this.broadcast;
-	}
-	
-	public String[] getUsernameListe(){
-		String[] users = new String[this.liste.size()];
-		for (int i=0; i < this.liste.size();i++){
-			users[i] = this.liste.get(i).getUsername();
-		}
-		return users;
-	}
-	
 	/*
 	 * Impl�mentation de l'ActionListener du bouton d'envoi de texte
 	 */
@@ -149,6 +137,37 @@ public class Controller{
 		}
 	}
 	
+	public InetAddress getBroadcast(){
+		return this.broadcast;
+	}
+	
+	public IHM getIhm(){
+		return ihm;
+	}
+	
+	//Permet d'obtenir les informations sur un utilisateur a partir de son pseudo
+	public LocalUser getInfos(String username){
+		LocalUser user = new LocalUser("",this.broadcast,0);
+		for (int i=0; i<this.liste.size(); i++){
+			if (this.liste.get(i).getUsername() == username){
+				user = this.liste.get(i);
+			}
+		}
+		if (user.getUsername().matches("")){
+			System.out.println("Error : Does not find the user");
+		}
+		return user;
+	}
+	
+	//retourne la liste des utilisateurs connectes
+	public String[] getUsernameListe(){
+		String[] users = new String[this.liste.size()];
+		for (int i=0; i < this.liste.size();i++){
+			users[i] = this.liste.get(i).getUsername();
+		}
+		return users;
+	}
+	
 	/*
 	 * Permet d'afficher la liste des utilisateurs connectes
 	 */
@@ -178,13 +197,13 @@ public class Controller{
 					}
 					System.out.println("Valeur de trouve : " + trouve);
 					if (trouve == false){
-						System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
-						this.liste.add(user);
+						System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+						this.addUser(user);
 					}
 				} else {
 					System.out.println("La liste est vide");
-					System.out.println("Hello----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
-					this.liste.add(user);
+					System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					this.addUser(user);
 				}
 			}else if(type == "reply"){
 				boolean trouve = false;
@@ -194,8 +213,8 @@ public class Controller{
 					}
 				}
 				if (trouve == false){
-					System.out.println("Reply----[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
-					this.liste.add(user);
+					System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					this.addUser(user);
 				}
 			}
 		}
@@ -211,6 +230,10 @@ public class Controller{
 		this.displayList();
 	}
 	
+	public void addUser(LocalUser user){
+		this.liste.add(user);
+	}
+	
 	public void receiveMessage(String username, String text){
 		System.out.println("[Controller] Username : " + username + " ; Text : "+ text);
 		if (ihm.getIndexConv(username) == -1){
@@ -219,22 +242,4 @@ public class Controller{
 		ihm.setDiscussion(ihm.getIndexConv(username),username + " : " + text+"\n");
 	}
 	
-	public IHM getIhm(){
-		return ihm;
-	}
-	
-	public LocalUser getInfos(String username){
-		LocalUser user = new LocalUser("",this.broadcast,0);
-		for (int i=0; i<this.liste.size(); i++){
-			if (this.liste.get(i).getUsername() == username){
-				user = this.liste.get(i);
-			}
-		}
-		
-		if (user.getUsername().matches("")){
-			System.out.println("Error : Does not find the user");
-		}
-		return user;
-	}
-
 }

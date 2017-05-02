@@ -40,7 +40,7 @@ public class IHM extends JFrame{
 	public String getUsername() {
 		return username;
 	}
-
+	
 	private void ihm(){
 		this.setLayout(new BorderLayout());
 		//Panel gauche 

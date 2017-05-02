@@ -34,7 +34,19 @@ public class IHMConnect extends JFrame{
 		return this.login.getText();
 	}
 	
+	/*
+	 * Permet de definir le nom de l'utilisateur
+	 * Utilisé seulement dans les tests
+	 */
+	public void setUsername(String username){
+		this.login.setText(username);
+	}
+	
 	public void addConnectListener(ActionListener listenConnect){
 		this.connect.addActionListener(listenConnect);
+	}
+	
+	public void pressConnectionButton(){
+		this.connect.doClick();
 	}
 }

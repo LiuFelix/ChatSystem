@@ -37,7 +37,7 @@ public class NetworkInterface {
 			/*Lancement du Thread qui �coute*/
 			ListenSocket ls = new ListenSocket(this.socket, this.network);
 			ls.start();
-			System.out.println("J'�coute sur l'IP : " + responseIP());
+			System.out.println("J'ecoute sur l'IP : " + responseIP());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
