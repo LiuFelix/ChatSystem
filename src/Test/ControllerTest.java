@@ -24,16 +24,18 @@ public class ControllerTest {
 		Launcher.setIhmCo(new IHMConnect());
 		IHMConnect ihmco = Launcher.getIhmCo();
 		Launcher.setController(new Controller(ihmco, 4567));
+		c = Launcher.getController();
 		ihmco.setUsername("a");
 		ihmco.pressConnectionButton();
+		ihm = c.getIhm();
 	}
 	
 	@Test
 	public void testUpdateList() throws UnknownHostException {
-		InetAddress adr = InetAddress.getByName("10.0.0.236");
+		InetAddress adr = InetAddress.getByName("10.202.1.255");
 		LocalUser user = new LocalUser("abc",adr,5000);
-		c.addUser(user);
-		assertEquals(c.getUsernameListe()[0],"b");
+		c.updateList(user, "hello");
+		assertEquals(c.getUsernameListe()[0],"abc");
 	}
 
 //	@Test
