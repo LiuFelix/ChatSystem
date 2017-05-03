@@ -23,7 +23,7 @@ public class ThreadHello extends Thread{
 	
 	public void run(){
 		while(true){
-			MsgHello hello = new MsgHello(this.adrSrc, this.portSrc, this.username, this.adrDest, this.portDest,(int)(Math.random()*100));
+			MsgHello hello = new MsgHello(this.adrSrc, this.portSrc, this.username, this.adrDest, this.portDest,(int)(Math.random()*10000));
 			ninterface.sendHello(hello);
 			try {
 				sleep(10000);

@@ -77,12 +77,12 @@ public class Controller{
 				tHello.start();
 				
 				//Phase de test : Envoi de plusieurs packets hello
-				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
-				ninterface.sendHello(hello1);
+//				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*10000));
+//				ninterface.sendHello(hello1);
 				
 //				for (int i=0; i<10000000; i++);
 //				System.out.println("Et Bye !");
-//				MsgBye bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*100));
+//				MsgBye bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*10000));
 //				ninterface.sendBye(bye);
 //				ninterface.sendHello(hello1);
 //				ninterface.sendHello(hello1);
@@ -119,7 +119,7 @@ public class Controller{
 			liste.clear();
 			MsgBye bye;
 			try {
-				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*100));
+				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*10000));
 				ninterface.sendBye(bye);
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();

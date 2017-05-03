@@ -62,7 +62,7 @@ public class NetworkInterface {
 	 */
 	public void sendMessageSysNet(InetAddress adrSrc, int portSrc, String sourceUsername, InetAddress adrDest, int portDest, String text) throws UnknownHostException{
 		System.out.println("[NetworkInterface] Creation du message texte");
-		int numAck = (int)(Math.random()*100);
+		int numAck = (int)(Math.random()*10000);
 		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, numAck, text); // Les infos pass�s par le controller
 		this.socketMsgText = new SendSocket(this.socket, adrDest, this.port, msg, true);
 		this.socketMsgText.start();
@@ -129,7 +129,7 @@ public class NetworkInterface {
 	public void sendReplyPresence(InetAddress adrDest, int portDest){
 		SendSocket ss;
 		try {
-			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,(int)(Math.random()*100));
+			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,(int)(Math.random()*10000));
 			ss = new SendSocket(this.socket, adrDest, this.port, msg, false);
 			ss.start();
 			System.out.println("J'ai bien vu une connexion, je te repond je suis connecte");
