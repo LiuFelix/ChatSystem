@@ -3,13 +3,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import message.MsgBye;
-import message.MsgHello;
+import message.*;
 
 
 public class Controller{
@@ -19,28 +17,27 @@ public class Controller{
 	private String username;
 	private NetworkInterface ninterface;
 	private InetAddress broadcast;
-	private ArrayList<LocalUser> liste;
+	private Model model;
 	private int port;
+	static ThreadHello tHello;
 	
 	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
 		/*Initialisation de l'IHM*/
 		this.ihmCo = ihmCo;
 		this.ihmCo.addConnectListener(new ConnectListener());
-
 		/*Initialisation du Network*/
-		this.liste = new ArrayList<>();
-		this.broadcast = InetAddress.getByName("10.202.1.9");
+		this.model = new Model();
+		this.broadcast = InetAddress.getByName("10.1.255.255");
 		this.port = port;
 		this.ninterface = new NetworkInterface(this.port, this);
 	}
 	
 	/*
-	 * Impl�mentation de l'ActionListener du bouton d'envoi de texte
+	 * Implementation de l'ActionListener du bouton d'envoi de texte
 	 */
  	class SendListener implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
-			//Le controller passe les informations et ninterface cr�e le packet pour l'envoyer au network
-			//System.out.println("Envoi des infos vers le Network Interface");
+			//Le controller passe les informations et ninterface cree le packet pour l'envoyer au network
 			try {
 				System.out.println("Informations : IP src = " + ninterface.responseIP() + ";  Port src = "+ ninterface.responsePort() + " ; Sender Username = "+ ihm.getUsername()+ " ; IP dest = "+ broadcast + "; port dest = "+port);
 				String text = ihm.getTextToSend();
@@ -52,12 +49,13 @@ public class Controller{
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			//System.out.println("Fin de l'envoi vers le network interface pour cr�ation du message");
 		}
 	}
 	
 	/*
-	 * Implementation de l'ActionListener de Connexion : Fermeture l'IHM de connexion et initialisation de l'IHM de discussion
+	 * Implementation de l'ActionListener de Connexion 
+	 * -Fermeture l'IHM de connexion et initialisation de l'IHM de discussion
+	 * -Ouverture de la fenetre IHM
 	 */
 	class ConnectListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
@@ -65,7 +63,6 @@ public class Controller{
 				username = ihmCo.getUsername();
 				ihmCo.setVisible(false);
 				ihmCo.dispose();
-//				System.out.println(username);
 				System.out.println("Initialisation de l'IHM");
 				ihm = new IHM(username);
 				ihm.addSendListener(new SendListener());
@@ -73,7 +70,7 @@ public class Controller{
 				ihm.addDisconnectListener(new DisconnectListener());
 				ihm.addCloseListener(new CloseListener());
 				
-				ThreadHello tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
+				tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
 				tHello.start();
 				
 				//Phase de test : Envoi de plusieurs packets hello
@@ -92,14 +89,18 @@ public class Controller{
 		}
 	}
 	
+	/*
+	 * Listener de la liste des contacts
+	 * Ajoute une fenetre de discussion lorsqu'on clique sur un des contact
+	 */
 	class ContactsListener implements ListSelectionListener{
 		public void valueChanged(ListSelectionEvent e) {
 			/*Ouvrir une nouvelle fenetre de discussion pour l'utilisateur choisi*/
-			String name = liste.get(e.getLastIndex()).getUsername();
+			String name = model.getListe().get(e.getLastIndex()).getUsername();
 			int index = ihm.getIndexConv(name);
 			//Si une conversation avec l'utilisateur choisi n'existe pas deja, on la cree sinon on l'ouvre
 			if (index == -1){
-				System.out.println("[ContactsListener] Ajout de " + name);
+				System.out.println("[ContactsListener] Ajout de la conversation avec " + name);
 				ihm.addConversation(name);
 			}else{
 				ihm.openConversation(index);
@@ -116,18 +117,21 @@ public class Controller{
 			System.out.println("You are disconnected");
 			ihm.dispose();
 			ihmCo.setVisible(true);
-			liste.clear();
+			model.getListe().clear();
 			MsgBye bye;
 			try {
 				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*10000));
 				ninterface.sendBye(bye);
+				tHello.stop();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 	}
 	
+	/*
+	 * Ferme la conversation actuelle
+	 */
 	class CloseListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			int index = ihm.getIndexConv(ihm.getDestinataire());
@@ -137,20 +141,35 @@ public class Controller{
 		}
 	}
 	
+	/*
+	 * Retourne l'adresse broadcast
+	 */
 	public InetAddress getBroadcast(){
 		return this.broadcast;
 	}
 	
+	/*
+	 * Retourne l'IHM
+	 */
 	public IHM getIhm(){
 		return ihm;
 	}
 	
-	//Permet d'obtenir les informations sur un utilisateur a partir de son pseudo
+	/*
+	 * Vide la liste des contacts
+	 */
+	public void clearListe(){
+		this.model.clearList();
+	}
+	
+	/*
+	 * Permet d'obtenir les informations sur un utilisateur a partir de son pseudo
+	 */
 	public LocalUser getInfos(String username){
 		LocalUser user = new LocalUser("",this.broadcast,0);
-		for (int i=0; i<this.liste.size(); i++){
-			if (this.liste.get(i).getUsername() == username){
-				user = this.liste.get(i);
+		for (int i=0; i<this.model.getListe().size(); i++){
+			if (this.model.getListe().get(i).getUsername() == username){
+				user = this.model.getListe().get(i);
 			}
 		}
 		if (user.getUsername().matches("")){
@@ -159,11 +178,13 @@ public class Controller{
 		return user;
 	}
 	
-	//retourne la liste des utilisateurs connectes
+	/*
+	 * retourne la liste des utilisateurs connectes
+	 */
 	public String[] getUsernameListe(){
-		String[] users = new String[this.liste.size()];
-		for (int i=0; i < this.liste.size();i++){
-			users[i] = this.liste.get(i).getUsername();
+		String[] users = new String[this.model.getListe().size()];
+		for (int i=0; i < this.model.getListe().size();i++){
+			users[i] = this.model.getListe().get(i).getUsername();
 		}
 		return users;
 	}
@@ -172,11 +193,7 @@ public class Controller{
 	 * Permet d'afficher la liste des utilisateurs connectes
 	 */
 	public void displayList(){
-//		if (users[0] == null || users[this.liste.size()-1] == null) {
-//			System.out.println("Error : Can't display users, list null");
-//		} else {
-			this.ihm.setListe(this.getUsernameListe());
-//		}
+		this.ihm.setListe(this.getUsernameListe());
 	}
 	
 	/*
@@ -188,10 +205,10 @@ public class Controller{
 	public void updateList(LocalUser user, String type){
 		if (!(user.getUsername().matches(ihm.getUsername()))){
 			if (type == "hello"){
-				if (!liste.isEmpty()){
+				if (!model.getListe().isEmpty()){
 					boolean trouve = false;
-					for(int i = 0; i < this.liste.size(); i++){
-						if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
+					for(int i = 0; i < this.model.getListe().size(); i++){
+						if (this.model.getListe().get(i).getUsername().matches(user.getUsername()) && this.model.getListe().get(i).getAdrIP().equals(user.getAdrIP())){
 							trouve = true;
 						}
 					}
@@ -207,8 +224,8 @@ public class Controller{
 				}
 			}else if(type == "reply"){
 				boolean trouve = false;
-				for(int i = 0; i < this.liste.size(); i++){
-					if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
+				for(int i = 0; i < this.model.getListe().size(); i++){
+					if (this.model.getListe().get(i).getUsername().matches(user.getUsername()) && this.model.getListe().get(i).getAdrIP().equals(user.getAdrIP())){
 						trouve = true;
 					}
 				}
@@ -222,16 +239,16 @@ public class Controller{
 	}
 	
 	public void removeList(LocalUser user){
-		for(int i = 0; i < this.liste.size(); i++){
-			if (this.liste.get(i).getUsername().matches(user.getUsername()) && this.liste.get(i).getAdrIP().equals(user.getAdrIP())){
-				this.liste.remove(i);
+		for(int i = 0; i < this.model.getListe().size(); i++){
+			if (this.model.getListe().get(i).getUsername().matches(user.getUsername()) && this.model.getListe().get(i).getAdrIP().equals(user.getAdrIP())){
+				this.model.getListe().remove(i);
 			}
 		}
 		this.displayList();
 	}
 	
 	public void addUser(LocalUser user){
-		this.liste.add(user);
+		this.model.getListe().add(user);
 	}
 	
 	public void receiveMessage(String username, String text){

@@ -50,7 +50,7 @@ public class SendSocket extends Thread{
 			if (this.systAck){
 				int nbEnvoi = 0;
 				while(nbEnvoi<3){
-					sleep(1000);
+					sleep(2000);
 					if (this.numAck == ((Message) obj).getNumMessage())
 						break;
 					System.out.println("nbEnvoi = "+ nbEnvoi);

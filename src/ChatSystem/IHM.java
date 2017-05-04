@@ -1,5 +1,6 @@
 package ChatSystem;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
@@ -49,27 +50,21 @@ public class IHM extends JFrame{
 		this.disconnect = new JButton("Disconnect as "+ this.username);
 		left.add("North",disconnect);
 		this.liste = new JList<String>();
-//		this.liste.setEnabled(false);
-		
 		JScrollPane contacts = new JScrollPane(this.liste,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		left.add("Center",contacts);
 		this.add("West",left);
-		
 		//Panel droit
 		JPanel right = new JPanel();
 		right.setLayout(new BorderLayout());
 		this.discussion = new JTabbedPane();
-		//JScrollPane disc = new JScrollPane(this.discussion,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//discussion.setEditable(false);
-		//discussion.disable();
 		right.add("Center",discussion);
-		
+		//panel du bas (zone de test,boutons)
 		JPanel bas = new JPanel();
 		bas.setLayout(new BorderLayout());
 		this.textToSend = new JTextArea();
 		JScrollPane texte = new JScrollPane(this.textToSend,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		bas.add("Center",texte);
-		
+		//les boutons
 		JPanel boutons = new JPanel();
 		boutons.setLayout(new GridLayout(3,1));
 		JButton file = new JButton("File");
@@ -104,12 +99,9 @@ public class IHM extends JFrame{
 		this.liste.addListSelectionListener(listenList);
 	}
 
-
 	public void setListe(String[] liste){
 		this.liste.setListData(liste);
 	}
-	
-	
 	
 	/*
 	 * Ajout action sur le bouton fermer la conversation
@@ -120,7 +112,6 @@ public class IHM extends JFrame{
 	
 	public void removeConv(int index){
 		this.discussion.remove(index);
-//		this.conversations.remove(index);
 		this.repaint();
 	}
 
@@ -137,10 +128,8 @@ public class IHM extends JFrame{
 	 * Met a jour le contenu de la discussion choisie
 	 */
 	public void setDiscussion(int index, String text) {
+		this.discussion.getComponentAt(index).setBackground(Color.GRAY);
 		((JTextArea) this.discussion.getComponentAt(index)).append(text);
-//		JTextArea conv = new JTextArea(text);
-//		this.conversations.get(index).add(conv);
-		
 	}
 	
 	/*
@@ -176,6 +165,9 @@ public class IHM extends JFrame{
 		return -1;
 	}
 	
+	/*
+	 * Ouvre la conversation deja existante
+	 */
 	public void openConversation(int index) {
 		this.discussion.setSelectedIndex(index);
 		this.liste.clearSelection();
@@ -190,8 +182,6 @@ public class IHM extends JFrame{
 			System.out.println("Ajout de "+ name);
 			JTextArea conv = new JTextArea();
 			conv.disable();
-//			JScrollPane scrollConv = new JScrollPane();
-//			scrollConv.add(conv);
 			this.conversations.add(conv);
 			this.discussion.addTab(name,conv);
 			this.liste.clearSelection();

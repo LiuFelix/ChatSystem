@@ -10,7 +10,6 @@ import message.MsgHello;
 public class Network {
 	
 	private NetworkInterface ninterface;
-	//private SendSocket ss;
 	private ListenSocket ls;
 	private Object sendObj;
 	private Object receiveObj;
@@ -19,27 +18,20 @@ public class Network {
 		return sendObj;
 	}
 
-
 	public void setSendObj(Object sendObj) {
 		this.sendObj = sendObj;
 	}
-
 
 	public Object getReceiveObj() {
 		return receiveObj;
 	}
 
-
 	public void setReceiveObj(Object receiveObj) {
 		this.receiveObj = receiveObj;
 	}
 
-
 	public Network(NetworkInterface ninterface){//ListenSocket ls){
 		this.ninterface = ninterface;
-		//this.ls = ls;
-		//this.ss = ss;
-		
 	}
 	
 	public ListenSocket getLs() {
@@ -48,24 +40,6 @@ public class Network {
 
 	public void setLs(ListenSocket ls) {
 		this.ls = ls;
-	}
-
-	/*
-	 * Envoie et reception de message Hello
-	 */
-	public void sendHello(MsgHello hello){
-		
-	}
-
-	/*
-	 * Envoie et reception de message Bye
-	 */
-	public void sendBye(MsgBye bye){
-		
-	}
-	
-	public void receiveBye(MsgBye bye){
-		
 	}
 	
 	/*
