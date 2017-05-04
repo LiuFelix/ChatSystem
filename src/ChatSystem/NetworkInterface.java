@@ -75,7 +75,7 @@ public class NetworkInterface {
 			System.out.println("[Ninterface] Receive Bye from "+ ((MsgBye) obj).getSourceUserName() + " \tIP : " + ((MsgBye) obj).getSourceAddress() + " \tPort : " + ((MsgBye) obj).getSourcePort());
 			controller.removeList(user);
 		}else if(obj instanceof MsgAskPresence){
-			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
+			LocalUser user = new LocalUser(((MsgAskPresence) obj).getSourceUserName(), ((MsgAskPresence) obj).getSourceAddress(), ((MsgAskPresence) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive Ask Presence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"hello");
 			sendReplyPresence(user.getAdrIP(),user.getNumPort());

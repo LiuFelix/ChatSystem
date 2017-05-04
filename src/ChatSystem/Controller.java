@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.swing.JFrame;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -11,6 +12,10 @@ import message.*;
 
 
 public class Controller{
+
+	public int getPort() {
+		return port;
+	}
 
 	private IHM ihm;
 	private IHMConnect ihmCo;
@@ -20,6 +25,8 @@ public class Controller{
 	private Model model;
 	private int port;
 	static ThreadHello tHello;
+	private Controller controller;
+	
 	
 	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
 		/*Initialisation de l'IHM*/
@@ -29,7 +36,7 @@ public class Controller{
 		this.model = new Model();
 		this.broadcast = InetAddress.getByName("10.1.255.255");
 		this.port = port;
-		this.ninterface = new NetworkInterface(this.port, this);
+		controller = this;
 	}
 	
 	/*
@@ -69,7 +76,9 @@ public class Controller{
 				ihm.addListListener(new ContactsListener());
 				ihm.addDisconnectListener(new DisconnectListener());
 				ihm.addCloseListener(new CloseListener());
-				
+				ihm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				ninterface = new NetworkInterface(controller.getPort(), controller);
 				tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
 				tHello.start();
 				
@@ -122,6 +131,7 @@ public class Controller{
 			try {
 				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*10000));
 				ninterface.sendBye(bye);
+				//ninterface = null;
 				tHello.stop();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
@@ -134,10 +144,16 @@ public class Controller{
 	 */
 	class CloseListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			int index = ihm.getIndexConv(ihm.getDestinataire());
-			if(index >= 0) {
-				ihm.removeConv(index);
+			String dest = ihm.getDestinataire();
+			if (dest != "") {
+				int index = ihm.getIndexConv(ihm.getDestinataire());
+				if(index >= 0) {
+					ihm.removeConv(index);
+				}
+			} else {
+				System.out.println("No window to close !");
 			}
+			
 		}
 	}
 	

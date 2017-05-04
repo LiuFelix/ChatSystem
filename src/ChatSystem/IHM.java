@@ -136,8 +136,12 @@ public class IHM extends JFrame{
 	 * Retourne le destinataire de la fenetre actuelle
 	 */
 	public String getDestinataire(){
+		String dest = "";
 		int index = this.discussion.getSelectedIndex();
-		return this.discussion.getTitleAt(index);
+		if (index != -1){
+			dest = this.discussion.getTitleAt(index);
+		}
+		return dest;
 	}
 	
 	/*
