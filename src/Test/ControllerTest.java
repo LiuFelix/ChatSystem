@@ -25,7 +25,7 @@ public class ControllerTest {
 		IHMConnect ihmco = Launcher.getIhmCo();
 		Launcher.setController(new Controller(ihmco, 4567));
 		c = Launcher.getController();
-		ihmco.setUsername("a");
+		ihmco.setUsername("principal");
 		ihmco.pressConnectionButton();
 		ihm = c.getIhm();
 	}
@@ -38,20 +38,15 @@ public class ControllerTest {
 		assertEquals(c.getUsernameListe()[0],"abc");
 	}
 
-//	@Test
-//	public void testRemoveList() throws UnknownHostException {
-//		InetAddress broadcast = InetAddress.getByName("10.202.1.9");
-//		LocalUser user1 = new LocalUser("b",broadcast,3000);
-//		LocalUser user2 = new LocalUser("c",broadcast,2000);
-//		c.updateList(user1, "hello");
-//		c.updateList(user2, "hello");
-//		c.removeList(user1);
-//		assertEquals(c.getUsernameListe()[0],"c");
-//	}
-
-//	@Test
-//	public void testGetInfos() {
-//		fail("Not yet implemented");
-//	}
-
+	@Test
+	public void testRemoveList() throws UnknownHostException {
+		c.clearListe();
+		InetAddress broadcast = InetAddress.getByName("10.202.1.9");
+		LocalUser user1 = new LocalUser("b",broadcast,3000);
+		LocalUser user2 = new LocalUser("c",broadcast,2000);
+		c.updateList(user1, "hello");
+		c.updateList(user2, "hello");
+		c.removeList(user1);
+		assertEquals(c.getUsernameListe()[0],"c");
+	}
 }
