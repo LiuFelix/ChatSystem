@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import ChatSystem.Controller;
 import ChatSystem.IHM;
-import ChatSystem.IHMConnect;
 import ChatSystem.Launcher;
 import ChatSystem.LocalUser;
 
@@ -21,12 +20,10 @@ public class ControllerTest {
 	
 	@BeforeClass
 	public static void setupBeforeClass() throws UnknownHostException{
-		Launcher.setIhmCo(new IHMConnect());
-		IHMConnect ihmco = Launcher.getIhmCo();
-		Launcher.setController(new Controller(ihmco, 4567));
+		Launcher.setController(new Controller(4567));
 		c = Launcher.getController();
-		ihmco.setUsername("principal");
-		ihmco.pressConnectionButton();
+		c.getIHMCo().setUsername("principal");
+		c.getIHMCo().pressConnectionButton();
 		ihm = c.getIhm();
 	}
 	
@@ -48,5 +45,11 @@ public class ControllerTest {
 		c.updateList(user2, "hello");
 		c.removeList(user1);
 		assertEquals(c.getUsernameListe()[0],"c");
+	}
+	
+	@Test
+	public void testConnexion() throws InterruptedException{
+		ihm.pressDeconnexionButton();
+		assertEquals(c.getUsernameListe()[0],"Perroquet");
 	}
 }
