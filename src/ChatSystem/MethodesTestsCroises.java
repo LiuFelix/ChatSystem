@@ -11,7 +11,7 @@ public class MethodesTestsCroises {
 	private NetworkInterface networkInterface;
 	
 	public MethodesTestsCroises() throws UnknownHostException{
-		ctrl = new Controller(new IHMConnect(), 3000);
+		ctrl = new Controller(3000);
 		networkInterface = new NetworkInterface(3000,ctrl);
 	}
 

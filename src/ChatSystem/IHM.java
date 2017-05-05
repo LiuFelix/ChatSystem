@@ -192,4 +192,15 @@ public class IHM extends JFrame{
 			this.liste.repaint();
 		}
 	}
+	
+	/*
+	 * Simulation de l'appui sur le bouton deconnect
+	 */
+	public void pressDeconnexionButton(){
+		this.disconnect.doClick();
+	}
+	
+	public JButton getDisconnect(){
+		return this.disconnect;
+	}
 }

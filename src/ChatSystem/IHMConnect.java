@@ -46,6 +46,9 @@ public class IHMConnect extends JFrame{
 		this.connect.addActionListener(listenConnect);
 	}
 	
+	/*
+	 * Simule l'appui sur le bouton Connect pour le test
+	 */
 	public void pressConnectionButton(){
 		this.connect.doClick();
 	}

@@ -8,14 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import message.*;
+import message.MsgBye;
 
 
 public class Controller{
-
-	public int getPort() {
-		return port;
-	}
 
 	private IHM ihm;
 	private IHMConnect ihmCo;
@@ -27,10 +23,9 @@ public class Controller{
 	static ThreadHello tHello;
 	private Controller controller;
 	
-	
-	public Controller(IHMConnect ihmCo, int port) throws UnknownHostException{
+	public Controller(int port) throws UnknownHostException{
 		/*Initialisation de l'IHM*/
-		this.ihmCo = ihmCo;
+		this.ihmCo = new IHMConnect();
 		this.ihmCo.addConnectListener(new ConnectListener());
 		/*Initialisation du Network*/
 		this.model = new Model();
@@ -122,10 +117,8 @@ public class Controller{
 	 */
 	class DisconnectListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			ihm.setVisible(false);
 			System.out.println("You are disconnected");
 			ihm.dispose();
-			ihmCo.setVisible(true);
 			model.getListe().clear();
 			MsgBye bye;
 			try {
@@ -136,6 +129,7 @@ public class Controller{
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
+			System.exit(0);
 		}
 	}
 	
@@ -169,6 +163,27 @@ public class Controller{
 	 */
 	public IHM getIhm(){
 		return ihm;
+	}
+	
+	/*
+	 * Retourne le numero de port 
+	 */
+	public int getPort() {
+		return port;
+	}
+	
+	/*
+	 * Retourne le nom d'utilisateur connecte
+	 */
+	public String getUsername(){
+		return this.username;
+	}
+	
+	/*
+	 * Retourne l'ihm connexion
+	 */
+	public IHMConnect getIHMCo(){
+		return this.ihmCo;
 	}
 	
 	/*
