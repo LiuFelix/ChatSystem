@@ -52,16 +52,32 @@ public class NetworkInterface {
 		return this.port;
 	}
 	
+	public DatagramSocket getSocket() {
+		return socket;
+	}
+	
+	public Controller getController(){
+		return this.controller;
+	}
+	
+	public int getPort(){
+		return this.port;
+	}
+	
+	public Network getNetwork(){
+		return this.network;
+	}
+
 	public void receivePacket(Object obj){
 		if (obj instanceof MsgText){
 			System.out.println( "[NetworkInterface]  Username : "+ ((MsgText) obj).getSourceUserName() + " ; Text : "+ ((MsgText) obj).getTextMessage() + " \tIP : " + ((MsgText) obj).getSourceAddress() + " \tPort : " + ((MsgText) obj).getSourcePort());
 			controller.receiveMessage(((MsgText) obj).getSourceUserName(), ((MsgText) obj).getTextMessage());
-			sendAck(((MsgText) obj).getSourceAddress(), ((MsgText) obj).getSourcePort(),((MsgText) obj).getNumMessage());
+			network.sendAck(((MsgText) obj).getSourceAddress(), ((MsgText) obj).getSourcePort(),((MsgText) obj).getNumMessage());
 		} else if (obj instanceof MsgHello){
 			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"hello");
-			sendReplyPresence(user.getAdrIP(),user.getNumPort());
+			network.sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		} else if (obj instanceof MsgReplyPresence){
 			LocalUser user = new LocalUser(((MsgReplyPresence) obj).getSourceUserName(), ((MsgReplyPresence) obj).getSourceAddress(), ((MsgReplyPresence) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
@@ -78,7 +94,7 @@ public class NetworkInterface {
 			LocalUser user = new LocalUser(((MsgAskPresence) obj).getSourceUserName(), ((MsgAskPresence) obj).getSourceAddress(), ((MsgAskPresence) obj).getSourcePort());
 			System.out.println("[Ninterface] Receive Ask Presence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"hello");
-			sendReplyPresence(user.getAdrIP(),user.getNumPort());
+			network.sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		}else {
 			System.out.println("Error : Not the right type\n Get : "+ obj.getClass().toString() + " instead of an instance of Message");
 		}
@@ -93,41 +109,5 @@ public class NetworkInterface {
 		Message msg = new MsgText(adrSrc, portSrc, sourceUsername, adrDest, portDest, numAck, text); // Les infos passes par le controller
 		this.socketMsgText = new SendSocket(this.socket, adrDest, this.port, msg, true);
 		this.socketMsgText.start();
-	}
-	
-	public void sendAck(InetAddress adrDest, int portDest, int num){
-		MsgAck ack;
-		try {
-			ack = new MsgAck(responseIP(), responsePort(), controller.getIhm().getUsername(), adrDest, portDest, num);
-			SendSocket ss;
-			ss = new SendSocket(this.socket, controller.getBroadcast(), this.port, ack, false);
-			ss.start();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void sendHello(MsgHello msg){
-		SendSocket ss;
-		ss = new SendSocket(this.socket, controller.getBroadcast(), this.port, msg, false);
-		ss.start();
-	}
-	
-	public void sendBye(MsgBye msg){
-		SendSocket ss;
-		ss = new SendSocket(this.socket, controller.getBroadcast(), this.port, msg, false);
-		ss.start();
-	}
-	
-	public void sendReplyPresence(InetAddress adrDest, int portDest){
-		SendSocket ss;
-		try {
-			MsgReplyPresence msg = new MsgReplyPresence(responseIP(),responsePort(),controller.getIhm().getUsername(),adrDest,portDest,(int)(Math.random()*10000));
-			ss = new SendSocket(this.socket, adrDest, this.port, msg, false);
-			ss.start();
-			System.out.println("J'ai bien vu une connexion, je te repond je suis connecte");
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
 	}
 }

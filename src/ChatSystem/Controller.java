@@ -123,7 +123,7 @@ public class Controller{
 			MsgBye bye;
 			try {
 				bye = new MsgBye(ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port,(int)(Math.random()*10000));
-				ninterface.sendBye(bye);
+				ninterface.getNetwork().sendBye(bye);
 				//ninterface = null;
 				tHello.stop();
 			} catch (UnknownHostException e1) {
