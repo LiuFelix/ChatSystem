@@ -1,6 +1,5 @@
 package ChatSystem;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
@@ -42,6 +41,9 @@ public class IHM extends JFrame{
 		return username;
 	}
 	
+	/*
+	 * Initialisation des composants de l'IHM
+	 */
 	private void ihm(){
 		this.setLayout(new BorderLayout());
 		//Panel gauche 
@@ -79,16 +81,23 @@ public class IHM extends JFrame{
 	}
 	
 	/*
-	 * Methode permettant d'ajouter un ActionListener sur le bouton Send
+	 * Ajout ActionListener sur bouton send
 	 */
-	void addSendListener(ActionListener listenSendBtn){
+	public void addSendListener(ActionListener listenSendBtn){
 		this.send.addActionListener(listenSendBtn);
 	}
 	
 	/*
-	 * Methode permettant d'ajouter un ActionListener sur le bouton Disconnect
+	 * Ajout action sur le bouton fermer la conversation
 	 */
-	void addDisconnectListener(ActionListener listenDisconnectBtn){
+	public void addCloseListener(ActionListener listenCloseBtn){
+		this.closeConv.addActionListener(listenCloseBtn);
+	}
+	
+	/*
+	 * Ajout ActionListener sur bouton disconnect
+	 */
+	public void addDisconnectListener(ActionListener listenDisconnectBtn){
 		this.disconnect.addActionListener(listenDisconnectBtn);
 	}
 	
@@ -104,12 +113,8 @@ public class IHM extends JFrame{
 	}
 	
 	/*
-	 * Ajout action sur le bouton fermer la conversation
+	 * Retire un onglet de la fenetre de discussion
 	 */
-	public void addCloseListener(ActionListener listenCloseBtn){
-		this.closeConv.addActionListener(listenCloseBtn);
-	}
-	
 	public void removeConv(int index){
 		this.discussion.remove(index);
 		this.repaint();
@@ -128,7 +133,7 @@ public class IHM extends JFrame{
 	 * Met a jour le contenu de la discussion choisie
 	 */
 	public void setDiscussion(int index, String text) {
-		this.discussion.getComponentAt(index).setBackground(Color.GRAY);
+		//this.discussion.getComponentAt(index).setBackground(Color.GRAY);
 		((JTextArea) this.discussion.getComponentAt(index)).append(text);
 	}
 	
@@ -196,7 +201,7 @@ public class IHM extends JFrame{
 	/*
 	 * Simulation de l'appui sur le bouton deconnect
 	 */
-	public void pressDeconnexionButton(){
+	public void pressDeconnectionButton(){
 		this.disconnect.doClick();
 	}
 	

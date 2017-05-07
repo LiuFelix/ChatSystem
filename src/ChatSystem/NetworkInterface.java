@@ -12,8 +12,6 @@ public class NetworkInterface {
 	private Network network;
 	private Controller controller;
 	private DatagramSocket socket;
-//	private InputStream input;
-//	private OutputStream output;
 	private int port;
 	private SendSocket socketMsgText;
 	private int numAck;
@@ -26,13 +24,12 @@ public class NetworkInterface {
 		this.controller = controller;
 		this.numAck = -1;
 		try {
-			/*Instanciation du DatagramSocket*/
+			/*Instanciation du DatagramSocket et du Network*/
 			this.socket = new DatagramSocket(port);
 			this.network = new Network(this);
-			/*Lancement du Thread qui ecoute*/
+			/*Lancement du Thread recevant les messages*/
 			ListenSocket ls = new ListenSocket(this.socket, this.network);
 			ls.start();
-			System.out.println("J'ecoute sur l'IP : " + responseIP());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,22 +49,27 @@ public class NetworkInterface {
 		return this.port;
 	}
 	
+	/*
+	 * Retourne le socket de l'interface reseau
+	 */
 	public DatagramSocket getSocket() {
 		return socket;
 	}
 	
+	/*
+	 * Retourne le controller
+	 */
 	public Controller getController(){
 		return this.controller;
-	}
-	
-	public int getPort(){
-		return this.port;
 	}
 	
 	public Network getNetwork(){
 		return this.network;
 	}
 
+	/*
+	 * Traitement des differents types de message
+	 */
 	public void receivePacket(Object obj){
 		if (obj instanceof MsgText){
 			System.out.println( "[NetworkInterface]  Username : "+ ((MsgText) obj).getSourceUserName() + " ; Text : "+ ((MsgText) obj).getTextMessage() + " \tIP : " + ((MsgText) obj).getSourceAddress() + " \tPort : " + ((MsgText) obj).getSourcePort());
@@ -75,24 +77,24 @@ public class NetworkInterface {
 			network.sendAck(((MsgText) obj).getSourceAddress(), ((MsgText) obj).getSourcePort(),((MsgText) obj).getNumMessage());
 		} else if (obj instanceof MsgHello){
 			LocalUser user = new LocalUser(((MsgHello) obj).getSourceUserName(), ((MsgHello) obj).getSourceAddress(), ((MsgHello) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive Hello from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
+			System.out.println("[NetworkInterface] Receive Hello from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"hello");
 			network.sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		} else if (obj instanceof MsgReplyPresence){
 			LocalUser user = new LocalUser(((MsgReplyPresence) obj).getSourceUserName(), ((MsgReplyPresence) obj).getSourceAddress(), ((MsgReplyPresence) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive ReplyPresence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
+			System.out.println("[NetworkInterface] Receive ReplyPresence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"reply");
 		} else if (obj instanceof MsgAck){
-			System.out.println("[Ninterface] Receive Ack from "+ ((MsgAck) obj).getSourceUserName() + " \tIP : " + ((MsgAck) obj).getSourceAddress() + " \tPort : " + ((MsgAck) obj).getSourcePort());
+			System.out.println("[NetworkInterface] Receive Ack from "+ ((MsgAck) obj).getSourceUserName() + " \tIP : " + ((MsgAck) obj).getSourceAddress() + " \tPort : " + ((MsgAck) obj).getSourcePort());
 			this.numAck = ((MsgAck) obj).getNumMessage();
 			this.socketMsgText.setNumAck(numAck);
 		} else if (obj instanceof MsgBye){
 			LocalUser user = new LocalUser(((MsgBye) obj).getSourceUserName(), ((MsgBye) obj).getSourceAddress(), ((MsgBye) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive Bye from "+ ((MsgBye) obj).getSourceUserName() + " \tIP : " + ((MsgBye) obj).getSourceAddress() + " \tPort : " + ((MsgBye) obj).getSourcePort());
+			System.out.println("[NetworkInterface] Receive Bye from "+ ((MsgBye) obj).getSourceUserName() + " \tIP : " + ((MsgBye) obj).getSourceAddress() + " \tPort : " + ((MsgBye) obj).getSourcePort());
 			controller.removeList(user);
 		}else if(obj instanceof MsgAskPresence){
 			LocalUser user = new LocalUser(((MsgAskPresence) obj).getSourceUserName(), ((MsgAskPresence) obj).getSourceAddress(), ((MsgAskPresence) obj).getSourcePort());
-			System.out.println("[Ninterface] Receive Ask Presence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
+			System.out.println("[NetworkInterface] Receive Ask Presence from "+ user.getUsername() + " \tIP : " + user.getAdrIP() + " \tPort : " + user.getNumPort());
 			controller.updateList(user,"hello");
 			network.sendReplyPresence(user.getAdrIP(),user.getNumPort());
 		}else {
@@ -101,7 +103,9 @@ public class NetworkInterface {
 	}
 	
 	/*
-	 * Methode permettant de lancer le thread qui envoie le message sur le reseau
+	 * Methode permettant de lancer le thread qui envoie le message texte sur le reseau
+	 * Le 5eme parametre du thread SendSocket active la fonction d acquittement et renvoie jusqu a 4 fois le message
+	 * si on ne recoit pas le un ack ayant le meme numero que le message que l on envoie
 	 */
 	public void sendMessageSysNet(InetAddress adrSrc, int portSrc, String sourceUsername, InetAddress adrDest, int portDest, String text) throws UnknownHostException{
 		System.out.println("[NetworkInterface] Creation du message texte");

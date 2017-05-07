@@ -21,6 +21,9 @@ public class ThreadHello extends Thread{
 		this.portDest = portDest;
 	}
 	
+	/*
+	 * Envoi periodique (10sec) de Hello
+	 */
 	public void run(){
 		while(true){
 			MsgHello hello = new MsgHello(this.adrSrc, this.portSrc, this.username, this.adrDest, this.portDest,(int)(Math.random()*10000));

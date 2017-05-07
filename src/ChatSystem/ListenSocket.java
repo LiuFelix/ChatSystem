@@ -9,17 +9,12 @@ import java.net.DatagramSocket;
 public class ListenSocket extends Thread{
 
 	private DatagramSocket ds;
-	private Object obj;
 	private Network network;
 	
 	public ListenSocket (DatagramSocket ds, Network network){
 		super();
 		this.ds = ds;
 		this.network = network;
-	}
-		
-	public Object getObj() {
-		return obj;
 	}
 
 	public void run () {
@@ -33,9 +28,8 @@ public class ListenSocket extends Thread{
 			      ObjectInputStream is = new ObjectInputStream(new BufferedInputStream(byteStream));
 			      Object o = is.readObject();
 			      is.close();
-			      this.obj = o;
-			      System.out.println("Reception d'un packet sur le reseau");
-			      network.receivePacket(this.obj);
+			      //System.out.println("Reception d'un packet sur le reseau");
+			      network.receivePacket(o);
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}

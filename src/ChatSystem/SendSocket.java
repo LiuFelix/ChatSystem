@@ -25,6 +25,8 @@ public class SendSocket extends Thread{
 		this.port = port;
 		this.obj = obj;
 		this.systAck = systAck;
+		
+		//Affiche la classe de l'objet que l'on recoit si ce n'est pas un Message
 		if (!(this.obj instanceof Message)){
 			System.out.println("Attention ce n'est pas un message, c'est "+ this.obj.toString());
 		}
@@ -33,7 +35,6 @@ public class SendSocket extends Thread{
 	public void run(){
 		try    
 		{  			
-			//InetAddress address = InetAddress.getByName(hostName);
 		    ByteArrayOutputStream byteStream = new ByteArrayOutputStream(5000);
 		    ObjectOutputStream os = new ObjectOutputStream(new BufferedOutputStream(byteStream));
 		    os.flush();
@@ -43,10 +44,14 @@ public class SendSocket extends Thread{
 		    byte[] sendBuf = byteStream.toByteArray();
 		    DatagramPacket packet = new DatagramPacket( sendBuf, sendBuf.length, this.adr, this.port);
 		    int byteCount = packet.getLength();
-		    System.out.println("Envoi du packet sur le reseau a " + this.adr+" de taille : "+byteCount);
+		    //System.out.println("Envoi du packet sur le reseau from " + this.adr+" de taille : "+byteCount);
 		    ds.send(packet);
 		    os.close();
 		    
+		    /*
+		     * Systeme de ack
+		     * Envoi jusqu'a 4 messages tant qu'on ne recoit pas le ack
+		     */
 			if (this.systAck){
 				int nbEnvoi = 0;
 				while(nbEnvoi<3){

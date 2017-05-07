@@ -14,6 +14,9 @@ public class IHMConnect extends JFrame{
 	private JTextArea login;
 	private JButton connect;
 	
+	/*
+	 * Constructeur de l'IHM de connexion
+	 */
 	public IHMConnect(){
 		this.setTitle("Connection");
 		this.setLayout(new BorderLayout());
@@ -30,6 +33,13 @@ public class IHMConnect extends JFrame{
 		this.setLocationRelativeTo(null);
 	}
 	
+	/*
+	 * Ajout action sur le bouton Connect
+	 */
+	public void addConnectListener(ActionListener listenConnect){
+		this.connect.addActionListener(listenConnect);
+	}
+	
 	public String getUsername(){
 		return this.login.getText();
 	}
@@ -41,11 +51,7 @@ public class IHMConnect extends JFrame{
 	public void setUsername(String username){
 		this.login.setText(username);
 	}
-	
-	public void addConnectListener(ActionListener listenConnect){
-		this.connect.addActionListener(listenConnect);
-	}
-	
+
 	/*
 	 * Simule l'appui sur le bouton Connect pour le test
 	 */
