@@ -20,7 +20,7 @@ public class ControllerTest {
 	
 	@BeforeClass
 	public static void setupBeforeClass() throws UnknownHostException{
-		Launcher.setController(new Controller(4567));
+		Launcher.setController(new Controller(4567, InetAddress.getByName("10.202.1.255")));
 		c = Launcher.getController();
 		c.getIHMCo().setUsername("principal");
 		c.getIHMCo().pressConnectionButton();
@@ -49,7 +49,7 @@ public class ControllerTest {
 	
 	@Test
 	public void testConnexion() throws InterruptedException{
-		ihm.pressDeconnexionButton();
+		ihm.pressDeconnectionButton();
 		assertEquals(c.getUsernameListe()[0],"Perroquet");
 	}
 }

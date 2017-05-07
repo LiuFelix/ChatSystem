@@ -27,6 +27,9 @@ public class HelloPerroquet extends Thread{
 		this.ds = ds;
 	}
 	
+	/*
+	 * Envoi toutes les 10 sec un hello
+	 */
 	public void run(){
 		while(true){
 			MsgHello hello = new MsgHello(this.adrSrc, this.portSrc, this.username, this.adrDest, this.portDest,(int)(Math.random()*10000));
@@ -37,19 +40,17 @@ public class HelloPerroquet extends Thread{
 				os.flush();
 			    os.writeObject(hello);
 			    os.flush();
-			  //retrieves byte array
+			    //retrieves byte array
 			    byte[] sendBuf = byteStream.toByteArray();
 			    DatagramPacket packet = new DatagramPacket( sendBuf, sendBuf.length, this.adrSrc, this.portSrc);
 			    int byteCount = packet.getLength();
-			    System.out.println("Envoi du packet sur le reseau a " + this.adrSrc+" de taille : "+byteCount);
+			    System.out.println("[Hello Perroquet] Envoi du Hello sur le reseau a " + this.adrDest + "  portDest   "+ this.portDest+ "  de  "+  this.adrSrc +  "  portSrc " + this.portSrc+ " de taille : "+byteCount);
 			    ds.send(packet);
 			    os.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		    
-		    
+			
 			try {
 				sleep(10000);
 			} catch (InterruptedException e) {
