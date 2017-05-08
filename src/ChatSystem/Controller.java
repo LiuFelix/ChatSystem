@@ -63,10 +63,6 @@ public class Controller{
 				//Lancement du thread envoyant periodiquement des Hello en broadcast
 				tHello = new ThreadHello(ninterface,ninterface.responseIP(),ninterface.responsePort(),ihm.getUsername(),broadcast,port);
 				tHello.start();
-				
-				//Phase de test : Envoi de plusieurs packets hello
-				MsgHello hello1 = new MsgHello(ninterface.responseIP(),ninterface.responsePort(),"Brand",broadcast,port,(int)(Math.random()*10000));
-				ninterface.getNetwork().sendHello(hello1);
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
