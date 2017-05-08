@@ -84,24 +84,18 @@ public class Controller{
 				if (!text.matches("")){
 					String destName = ihm.getDestinataire();
 					if (destName != "") {
-						System.out.println("Informations : IP src = " + ninterface.responseIP() 
-											+ "; Port src = "+ ninterface.responsePort() 
-											+ "; Sender Username = "+ ihm.getUsername()
-											+ "; IP dest = " + broadcast 
-											+ "; port dest = "+port);
-						
 						ihm.setDiscussion(ihm.getIndexConv(ihm.getDestinataire()),"Moi : " + text+ "\n");
 						LocalUser dest = getInfos(ihm.getDestinataire());
 						//Envoi des informations du destinataire a l'interface reseau + le texte a envoyer
 						ninterface.sendMessageSysNet(ninterface.responseIP(), ninterface.responsePort(), ihm.getUsername(), dest.getAdrIP(), dest.getNumPort(), text);
 					} else {
-						System.out.println("Please, select a contact first");
+						throw new Exception("Please, select a contact first");
 					}
 				} else {
-					System.out.println("Nothing to send");
+					throw new Exception("Nothing to send");
 				}
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
 			}
 		}
 	}
@@ -137,7 +131,11 @@ public class Controller{
 					ihm.removeConv(index);
 				}
 			} else {
-				System.out.println("No window to close !");
+				try {
+					throw new Exception("No window to close");
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
+				}
 			}
 		}
 	}
@@ -220,14 +218,14 @@ public class Controller{
 							trouve = true;
 						}
 					}
-					System.out.println("Valeur de trouve : " + trouve);
+					//System.out.println("Valeur de trouve : " + trouve);
 					if (trouve == false){
-						System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+						System.out.println("[UpdateList] Ajout de "+ user.getUsername() + " a la liste");
 						this.addUser(user);
 					}
 				} else {
-					System.out.println("La liste est vide");
-					System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					System.out.println("[UpdateList] La liste est vide");
+					System.out.println("[UpdateList] Ajout de "+ user.getUsername() + " a la liste");
 					this.addUser(user);
 				}
 			}else if(type == "reply"){
@@ -238,7 +236,7 @@ public class Controller{
 					}
 				}
 				if (trouve == false){
-					System.out.println("[UpdateList] J'ajoute "+ user.getUsername() + " a la liste");
+					System.out.println("[UpdateList] Ajout de "+ user.getUsername() + " a la liste");
 					this.addUser(user);
 				}
 			}
@@ -253,6 +251,7 @@ public class Controller{
 		for(int i = 0; i < this.model.getListe().size(); i++){
 			if (this.model.getListe().get(i).getUsername().matches(user.getUsername()) && this.model.getListe().get(i).getAdrIP().equals(user.getAdrIP())){
 				this.model.getListe().remove(i);
+				System.out.println("[UpdateList] Remove de " + user.getUsername() + " de la liste");
 			}
 		}
 		this.displayList();
@@ -269,7 +268,7 @@ public class Controller{
 	 * Affiche le texte dans l'onglet correspondant a l'utilisateur nous envoyant un message
 	 */
 	public void receiveMessage(String username, String text){
-		System.out.println("[Controller] Username : " + username + " ; Text : "+ text);
+		//System.out.println("[Controller] Username : " + username + "\tText : "+ text);
 		if (ihm.getIndexConv(username) == -1){
 			ihm.addConversation(username);
 		}

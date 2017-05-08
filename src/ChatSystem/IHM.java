@@ -188,7 +188,6 @@ public class IHM extends JFrame{
 	 */
 	public void addConversation(String name){
 		if (!existConv(name)){
-			System.out.println("Ajout de "+ name);
 			JTextArea conv = new JTextArea();
 			conv.disable();
 			this.conversations.add(conv);
@@ -199,13 +198,34 @@ public class IHM extends JFrame{
 	}
 	
 	/*
-	 * Simulation de l'appui sur le bouton deconnect
+	 * Simulation de l'appui sur le bouton send
 	 */
-	public void pressDeconnectionButton(){
-		this.disconnect.doClick();
+	public void pressSendButton(){
+		this.send.doClick();
 	}
 	
 	public JButton getDisconnect(){
 		return this.disconnect;
+	}	
+	
+	/*
+	 * Pour les tests : Simulation dans la zone d'ecriture
+	 */
+	public void setTextToSend(JTextArea textToSend) {
+		this.textToSend = textToSend;
+	}
+	
+	/*
+	 * Simulation de l'appui sur le bouton close
+	 */
+	public void pressCloseButton(){
+		this.closeConv.doClick();
+	}
+
+	/*
+	 * Simulation de l'appui sur le bouton deconnect
+	 */
+	public void pressDeconnectionButton(){
+		this.disconnect.doClick();
 	}
 }
