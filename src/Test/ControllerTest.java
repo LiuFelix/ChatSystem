@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.swing.JTextArea;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,6 +28,7 @@ public class ControllerTest {
 		c.getIHMCo().pressConnectionButton();
 		ihm = c.getIhm();
 	}
+
 	
 	@Test
 	public void testUpdateList() throws UnknownHostException {
@@ -47,9 +50,41 @@ public class ControllerTest {
 		assertEquals(c.getUsernameListe()[0],"c");
 	}
 	
+//	@Test
+//	public void testConnexion() throws InterruptedException{
+//		ihm.pressDeconnectionButton();
+//		assertEquals(c.getUsernameListe()[0],"Perroquet");
+//	}
+	
 	@Test
-	public void testConnexion() throws InterruptedException{
-		ihm.pressDeconnectionButton();
-		assertEquals(c.getUsernameListe()[0],"Perroquet");
+	public void testSendWithoutText() {
+		try{
+			ihm.pressSendButton();
+		} catch (Exception ex){
+			assert(ex.getMessage().contains("Nothing to send"));
+		}
 	}
+	
+	@Test
+	public void testSendWithoutDestination(){
+		try{
+			JTextArea text = new JTextArea();
+			text.setText("Bonjour");
+			ihm.setTextToSend(text);
+			ihm.pressSendButton();
+		} catch (Exception ex){
+			assert(ex.getMessage().contains("Please, select a contact first"));
+		}
+	}
+	
+	@Test
+	public void testCloseANonSelectedWindow(){
+		try{
+			ihm.pressCloseButton();
+		} catch (Exception ex){
+			assert(ex.getMessage().contains("No window to close"));
+		}
+	}
+	
+
 }
